@@ -1,5 +1,4 @@
 /* This file is for your main application CSS */
-@import "./phoenix.css";
 
 /* Alerts and form errors used by phx.new */
 .alert {
@@ -117,4 +116,11 @@
 @keyframes fade-out-keys{
   0% { opacity: 1; }
   100% { opacity: 0; }
+}
+
+.current-image {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: 600px;
 }

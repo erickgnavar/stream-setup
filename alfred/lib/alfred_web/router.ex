@@ -14,16 +14,32 @@ defmodule AlfredWeb.Router do
     plug :accepts, ["json"]
   end
 
+  # defined to avoid using default liveview layout, for an overlay we need to have
+  # control of the whole page
+  pipeline :empty_live do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+  end
+
   scope "/", AlfredWeb do
     pipe_through :browser
 
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", AlfredWeb do
-  #   pipe_through :api
-  # end
+  scope "/", AlfredWeb do
+    pipe_through :empty_live
+
+    live "/overlay", OverlayLive
+  end
+
+  scope "/api", AlfredWeb do
+    pipe_through :api
+
+    post "/overlay", OverlayController, :trigger_event
+  end
 
   # Enables LiveDashboard only for development
   #
