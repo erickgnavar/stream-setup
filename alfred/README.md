@@ -1,19 +1,28 @@
 # Alfred
 
-To start your Phoenix server:
+Application with utilities for OBS stream
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+## Overlay
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+This is a liveview page in `/overlay` which can be loaded in OBS using web browser source
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+We can connect emacs with this overlay by using the following code
 
-## Learn more
+```emacs-lisp
+(defun my/stream-event-post (event-name)
+  "Make POST request to notify overlay application about new event."
+  (let ((url-request-method "POST")
+        (url-request-extra-headers `(("Content-Type" . "application/json")))
+        (url-request-data (format "{\"event\": \"%s\"}" event-name)))
+    (url-retrieve-synchronously "http://localhost:4000/api/overlay" t)))
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+(defun my/notify-stream (buffer result)
+  "Check compilation result and trigger a event for each case."
+  (if (string-match "^finished" result)
+      (my/stream-event-post "exit_zero")
+    (my/stream-event-post "exit_non_zero")))
+
+(add-to-list 'compilation-finish-functions 'my/notify-stream)
+```
+
+This will point to a instance of the application running in localhost
