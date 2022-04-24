@@ -8,6 +8,8 @@ defmodule Alfred.Chat.MessageHandler do
   """
   use GenServer
 
+  alias Alfred.Commands
+
   def start_link({client, channel}) do
     GenServer.start_link(__MODULE__, {client, channel})
   end
@@ -30,17 +32,17 @@ defmodule Alfred.Chat.MessageHandler do
   end
 
   def handle_info({:received, "!" <> command, _sender, channel}, {client, channel} = state) do
-    # TODO: add an abstraction to have dynamic commands
-    message =
-      case command do
-        "project" ->
-          "comming soon!"
+    case Commands.execute(command) do
+      {:ok, :noreply} ->
+        nil
 
-        _ ->
-          "unknown command"
-      end
+      {:ok, result} when is_binary(result) ->
+        :ok = ExIRC.Client.msg(client, :privmsg, channel, result)
 
-    :ok = ExIRC.Client.msg(client, :privmsg, channel, message)
+      {:error, reason} ->
+        :ok = ExIRC.Client.msg(client, :privmsg, channel, reason)
+    end
+
     {:noreply, state}
   end
 

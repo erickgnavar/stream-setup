@@ -8,7 +8,8 @@
 import Config
 
 config :alfred,
-  ecto_repos: [Alfred.Repo]
+  ecto_repos: [Alfred.Repo],
+  migration_timestamps: [type: :utc_datetime]
 
 # Configures the endpoint
 config :alfred, AlfredWeb.Endpoint,
