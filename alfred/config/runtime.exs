@@ -59,3 +59,12 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 end
+
+if config_env() != :test do
+  config :alfred, :twitch_irc,
+    username: System.get_env("TWITCH_IRC_USERNAME"),
+    password: System.get_env("TWITCH_IRC_TOKEN"),
+    channel: System.get_env("TWITCH_IRC_CHANNEL")
+else
+  config :alfred, :twitch_irc, false
+end

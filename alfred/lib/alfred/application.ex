@@ -15,7 +15,9 @@ defmodule Alfred.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Alfred.PubSub},
       # Start the Endpoint (http/https)
-      AlfredWeb.Endpoint
+      AlfredWeb.Endpoint,
+      # twitch irc chat supervisor
+      Alfred.Chat
       # Start a worker by calling: Alfred.Worker.start_link(arg)
       # {Alfred.Worker, arg}
     ]
