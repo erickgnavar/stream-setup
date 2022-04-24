@@ -118,9 +118,28 @@
   100% { opacity: 0; }
 }
 
+:root {
+  --current-image-max-width: 500px;
+}
+
 .current-image {
   position: absolute;
   left: 0;
   top: 0;
-  max-width: 600px;
+  max-width: var(--current-image-max-width);
+}
+
+.image-enter {
+  animation-duration: 1s;
+  animation-name: slidein;
+}
+
+@keyframes slidein {
+  from {
+    left: calc(-1 * var(--current-image-max-width));
+  }
+
+  to {
+    left: 0;
+  }
 }
