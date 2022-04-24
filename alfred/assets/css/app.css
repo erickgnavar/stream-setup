@@ -120,12 +120,30 @@
 
 :root {
   --current-image-max-width: 500px;
+  --topbar-height: 1.5rem;
+  --topbar-vertical-padding: 5px;
+}
+
+.topbar {
+  position: relative;
+  background-color: black;
+  color: white;
+  font-size: var(--topbar-height);
+}
+
+.topbar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  padding: var(--topbar-vertical-padding) 10px;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .current-image {
   position: absolute;
   left: 0;
-  top: 0;
+  top: calc(var(--topbar-height) + 2 * var(--topbar-vertical-padding));
   max-width: var(--current-image-max-width);
 }
 
