@@ -161,3 +161,25 @@
     left: 0;
   }
 }
+
+.project-diffs {
+  position: absolute;
+  top: 4rem;
+  right: 2rem;
+  font-size: 2rem;
+  font-family: monospace;
+}
+
+.diff-add {
+  color: green;
+  text-align: right;
+}
+
+.diff-delete {
+  text-align: left;
+  color: red;
+}
+
+.diff-filename {
+  color: magenta;
+}

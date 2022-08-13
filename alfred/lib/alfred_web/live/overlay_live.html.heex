@@ -22,5 +22,25 @@
     <%= unless is_nil(@image_url) do %>
     <img src={@image_url} class="current-image image-enter" />
     <% end %>
+
+    <div class="project-diffs">
+      <table>
+        <tbody>
+          <%= for diff <- @project_diffs do %>
+            <tr>
+              <td class="diff-add">
+                +<%= diff.add %>
+              </td>
+              <td class="diff-delete">
+                -<%= diff.delete %>
+              </td>
+              <td class="diff-filename">
+                <%= diff.filename %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
   </body>
 </html>

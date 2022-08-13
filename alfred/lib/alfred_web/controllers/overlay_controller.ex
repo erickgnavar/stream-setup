@@ -4,7 +4,7 @@ defmodule AlfredWeb.OverlayController do
   alias Alfred.Core
   alias Phoenix.PubSub
 
-  @overlay_topic "overlay"
+  @overlay_topic AlfredWeb.OverlayLive.topic_name()
   @command_exit_events %{
     "exit_non_zero" => "error_image",
     "exit_zero" => "success_image"
