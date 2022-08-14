@@ -2,16 +2,15 @@ defmodule Alfred.Services.Git do
   @moduledoc """
   Get git project info in real time
   """
-  use GenServer
+  use Alfred.Services.FlagGenServer, flag: "flags.git"
 
   alias Alfred.Core
   alias Phoenix.PubSub
 
   @overlay_topic AlfredWeb.OverlayLive.topic_name()
   @update_interval :timer.seconds(1)
-  @flags_topic Core.flags_topic()
 
-  def start_link(_opts) do
+  def post_init(state) do
     # in case this is pre configured we use the value from database
     project_dir =
       case Core.get_config_param("git_project_dir") do
@@ -19,20 +18,10 @@ defmodule Alfred.Services.Git do
         %{value: value} -> value
       end
 
-    flag =
-      case Core.get_config_param("flags.git") do
-        nil -> false
-        %{value: value} -> value == "true"
-      end
+    # start a loop to have diffs list always updated
+    Process.send_after(self(), :get_diffs, @update_interval)
 
-    initial_state = %{
-      # initial project dir will be changed using change_project_dir/1
-      project_dir: project_dir,
-      diffs: [],
-      flag: flag
-    }
-
-    GenServer.start_link(__MODULE__, initial_state, name: __MODULE__)
+    Map.merge(state, %{project_dir: project_dir, diffs: []})
   end
 
   @doc """
@@ -41,16 +30,6 @@ defmodule Alfred.Services.Git do
   @spec change_project_dir(String.t()) :: any
   def change_project_dir(new_project_dir) do
     GenServer.cast(__MODULE__, {:change_project_dir, new_project_dir})
-  end
-
-  @impl true
-  def init(state) do
-    # subscribe to flags topic
-    PubSub.subscribe(Alfred.PubSub, @flags_topic)
-
-    # start a loop to have diffs list always updated
-    Process.send_after(self(), :get_diffs, @update_interval)
-    {:ok, state}
   end
 
   @impl true
@@ -84,17 +63,6 @@ defmodule Alfred.Services.Git do
     end
 
     {:noreply, Map.put(state, :diffs, diffs)}
-  end
-
-  @impl true
-  def handle_info({:flag_updated, "flags.git", value}, state) do
-    {:noreply, Map.put(state, :flag, value == "true")}
-  end
-
-  @impl true
-  def handle_info({:flag_updated, _key, _value}, state) do
-    # ignore other flags
-    {:noreply, state}
   end
 
   @impl true
