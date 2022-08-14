@@ -9,6 +9,7 @@ defmodule Alfred.Services.Git do
 
   @overlay_topic AlfredWeb.OverlayLive.topic_name()
   @update_interval :timer.seconds(1)
+  @flags_topic Core.flags_topic()
 
   def start_link(_opts) do
     # in case this is pre configured we use the value from database
@@ -18,10 +19,17 @@ defmodule Alfred.Services.Git do
         %{value: value} -> value
       end
 
+    flag =
+      case Core.get_config_param("flags.git") do
+        nil -> false
+        %{value: value} -> value == "true"
+      end
+
     initial_state = %{
       # initial project dir will be changed using change_project_dir/1
       project_dir: project_dir,
-      diffs: []
+      diffs: [],
+      flag: flag
     }
 
     GenServer.start_link(__MODULE__, initial_state, name: __MODULE__)
@@ -37,6 +45,9 @@ defmodule Alfred.Services.Git do
 
   @impl true
   def init(state) do
+    # subscribe to flags topic
+    PubSub.subscribe(Alfred.PubSub, @flags_topic)
+
     # start a loop to have diffs list always updated
     Process.send_after(self(), :get_diffs, @update_interval)
     {:ok, state}
@@ -45,7 +56,7 @@ defmodule Alfred.Services.Git do
   @impl true
   def handle_info(:get_diffs, %{project_dir: project_dir} = state) do
     diffs =
-      if File.dir?(Path.join(project_dir, ".git")) do
+      if state.flag and File.dir?(Path.join(project_dir, ".git")) do
         File.cd!(project_dir, fn ->
           case System.cmd("git", ["diff", "--numstat"]) do
             {output, 0} ->
@@ -73,6 +84,17 @@ defmodule Alfred.Services.Git do
     end
 
     {:noreply, Map.put(state, :diffs, diffs)}
+  end
+
+  @impl true
+  def handle_info({:flag_updated, "flags.git", value}, state) do
+    {:noreply, Map.put(state, :flag, value == "true")}
+  end
+
+  @impl true
+  def handle_info({:flag_updated, _key, _value}, state) do
+    # ignore other flags
+    {:noreply, state}
   end
 
   @impl true

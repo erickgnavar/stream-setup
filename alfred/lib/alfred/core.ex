@@ -7,6 +7,11 @@ defmodule Alfred.Core do
   alias Alfred.Repo
 
   alias Alfred.Core.ConfigParam
+  alias Phoenix.PubSub
+
+  @flags_topic "flags"
+
+  def flags_topic, do: @flags_topic
 
   @doc """
   Returns the list of config_params.
@@ -77,7 +82,32 @@ defmodule Alfred.Core do
     config_param
     |> ConfigParam.changeset(attrs)
     |> Repo.update()
+    |> update_pubsub()
   end
+
+  def toggle_flag(flag, value) when is_boolean(value) do
+    key = "flags.#{flag}"
+
+    case get_config_param(key) do
+      nil ->
+        {:error, :not_found}
+
+      config_param ->
+        update_config_param(config_param, %{"value" => to_string(value)})
+    end
+  end
+
+  defp update_pubsub({:ok, %{key: key, value: value} = updated}) do
+    if String.starts_with?(key, "flags.") do
+      PubSub.broadcast(Alfred.PubSub, @flags_topic, {:flag_updated, key, value})
+    end
+
+    # updates that are not flags will be ignored
+
+    {:ok, updated}
+  end
+
+  defp update_pubsub({:error, error}), do: {:error, error}
 
   @doc """
   Deletes a config_param.
