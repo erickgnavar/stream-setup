@@ -4,15 +4,23 @@ defmodule Alfred.Services.Git do
   """
   use GenServer
 
+  alias Alfred.Core
   alias Phoenix.PubSub
 
   @overlay_topic AlfredWeb.OverlayLive.topic_name()
   @update_interval :timer.seconds(1)
 
   def start_link(_opts) do
+    # in case this is pre configured we use the value from database
+    project_dir =
+      case Core.get_config_param("git_project_dir") do
+        nil -> ""
+        %{value: value} -> value
+      end
+
     initial_state = %{
       # initial project dir will be changed using change_project_dir/1
-      project_dir: "",
+      project_dir: project_dir,
       diffs: []
     }
 
