@@ -33,6 +33,7 @@ defmodule AlfredWeb.Router do
     pipe_through :empty_live
 
     live "/overlay", OverlayLive
+    live "/admin", AdminLive
   end
 
   scope "/api", AlfredWeb do

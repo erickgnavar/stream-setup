@@ -85,7 +85,7 @@ defmodule Alfred.Core do
     |> update_pubsub()
   end
 
-  def toggle_flag(flag, value) when is_boolean(value) do
+  def toggle_flag(flag) do
     key = "flags.#{flag}"
 
     case get_config_param(key) do
@@ -93,7 +93,14 @@ defmodule Alfred.Core do
         {:error, :not_found}
 
       config_param ->
-        update_config_param(config_param, %{"value" => to_string(value)})
+        next_value =
+          if config_param.value == "true" do
+            "false"
+          else
+            "true"
+          end
+
+        update_config_param(config_param, %{"value" => next_value})
     end
   end
 

@@ -183,3 +183,11 @@
 .diff-filename {
   color: magenta;
 }
+
+.flag-on {
+  color: green;
+}
+
+.flag-off {
+  color: red;
+}
