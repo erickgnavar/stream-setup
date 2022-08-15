@@ -2,6 +2,8 @@ defmodule Alfred.Core.ConfigParam do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @timestamps_opts [type: :utc_datetime]
+
   schema "config_params" do
     field :key, :string
     field :value, :string
