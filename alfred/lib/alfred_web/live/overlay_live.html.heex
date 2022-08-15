@@ -42,5 +42,17 @@
         </tbody>
       </table>
     </div>
+
+    <%= unless is_nil(@playing_song) do %>
+    <div class="playing-song-container">
+      <img src={@playing_song.album.image_url} />
+      <div class="song-name">
+        <%= @playing_song.name %>
+      </div>
+      <div class="album-name">
+        <%= @playing_song.album.name %>
+      </div>
+    </div>
+    <% end %>
   </body>
 </html>

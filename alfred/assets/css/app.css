@@ -191,3 +191,29 @@
 .flag-off {
   color: red;
 }
+
+.playing-song-container {
+  padding: 1rem;
+  border-radius: 1rem;
+  background-color: purple;
+  box-shadow: 1px black;
+  color: white;
+  text-align: center;
+  font-size: 1rem;
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+}
+
+.playing-song-container img {
+  width: 180px;
+  border-radius: 1rem;
+}
+
+.song-name {
+  font-size: 1.5rem;
+}
+
+.album-name {
+  font-size: 1rem;
+}

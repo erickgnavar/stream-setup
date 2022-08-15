@@ -48,7 +48,8 @@ defmodule Alfred.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:exirc, "~> 2.0"}
+      {:exirc, "~> 2.0"},
+      {:spotify_ex, "~> 2.3"}
     ]
   end
 

@@ -36,6 +36,11 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :spotify_ex,
+  auth_client: Spotify.Authentication,
+  callback_url: "http://localhost:4000/spotify/authenticate",
+  scopes: ["user-read-currently-playing"]
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

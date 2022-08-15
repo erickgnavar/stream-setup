@@ -85,6 +85,16 @@ defmodule Alfred.Core do
     |> update_pubsub()
   end
 
+  def update_config_param(key, value) when is_binary(key) and is_binary(value) do
+    case get_config_param(key) do
+      nil ->
+        nil
+
+      config ->
+        update_config_param(config, %{"value" => value})
+    end
+  end
+
   def toggle_flag(flag) do
     key = "flags.#{flag}"
 

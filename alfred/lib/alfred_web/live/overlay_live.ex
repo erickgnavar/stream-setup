@@ -13,6 +13,7 @@ defmodule AlfredWeb.OverlayLive do
     {:ok,
      socket
      |> assign(:project_diffs, [])
+     |> assign(:playing_song, nil)
      |> assign(:image_url, nil)}
   end
 
@@ -33,5 +34,9 @@ defmodule AlfredWeb.OverlayLive do
 
   def handle_info({:new_project_diffs, diffs}, socket) do
     {:noreply, assign(socket, :project_diffs, diffs)}
+  end
+
+  def handle_info({:playing_song, song}, socket) do
+    {:noreply, assign(socket, :playing_song, song)}
   end
 end

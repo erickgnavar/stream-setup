@@ -42,6 +42,11 @@ defmodule AlfredWeb.Router do
     post "/overlay", OverlayController, :trigger_event
   end
 
+  scope "/spotify", AlfredWeb do
+    get "/authorize", SpotifyController, :authorize
+    get "/authenticate", SpotifyController, :authenticate
+  end
+
   # Enables LiveDashboard only for development
   #
   # If you want to use the LiveDashboard in production, you should put

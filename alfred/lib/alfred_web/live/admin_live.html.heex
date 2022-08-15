@@ -27,5 +27,10 @@
         <% end %>
       </ul>
     </div>
+
+    <div>
+      <h3>Spotify</h3>
+      <%= link "Login", to: Routes.spotify_path(@socket, :authorize) %>
+    </div>
   </body>
 </html>
