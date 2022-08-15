@@ -33,6 +33,9 @@ defmodule Alfred.Workers.Spotify do
         {:ok,
          %{
            name: get_in(payload, ["item", "name"]),
+           artist: %{
+             name: get_in(payload, ["item", "artists"]) |> List.first() |> Map.get("name")
+           },
            album: %{
              name: get_in(payload, ["item", "album", "name"]),
              # take second cover image

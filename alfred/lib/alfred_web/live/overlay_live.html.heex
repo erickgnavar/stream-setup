@@ -49,8 +49,8 @@
       <div class="song-name">
         <%= @playing_song.name %>
       </div>
-      <div class="album-name">
-        <%= @playing_song.album.name %>
+      <div>
+        <%= @playing_song.artist.name %> - <%= @playing_song.album.name %>
       </div>
     </div>
     <% end %>
