@@ -21,9 +21,9 @@ defmodule Alfred.Application do
       # Start a worker by calling: Alfred.Worker.start_link(arg)
       # {Alfred.Worker, arg}
       # git project watcher to compute diffs
-      Alfred.Services.Git,
+      Alfred.Workers.Git,
       # Fetch Spotify current song
-      Alfred.Services.Spotify
+      Alfred.Workers.Spotify
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

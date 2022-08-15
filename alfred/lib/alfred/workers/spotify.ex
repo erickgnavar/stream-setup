@@ -1,8 +1,8 @@
-defmodule Alfred.Services.Spotify do
+defmodule Alfred.Workers.Spotify do
   @moduledoc """
   Get current song from Spotify
   """
-  use Alfred.Services.FlagGenServer, flag: "flags.spotify"
+  use Alfred.Workers.FlagGenServer, flag: "flags.spotify"
 
   alias Alfred.Core
   alias Phoenix.PubSub

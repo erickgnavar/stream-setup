@@ -1,8 +1,8 @@
-defmodule Alfred.Services.Git do
+defmodule Alfred.Workers.Git do
   @moduledoc """
   Get git project info in real time
   """
-  use Alfred.Services.FlagGenServer, flag: "flags.git"
+  use Alfred.Workers.FlagGenServer, flag: "flags.git"
 
   alias Alfred.Core
   alias Phoenix.PubSub

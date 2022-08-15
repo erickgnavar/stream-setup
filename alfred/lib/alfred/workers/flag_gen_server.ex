@@ -1,4 +1,4 @@
-defmodule Alfred.Services.FlagGenServer do
+defmodule Alfred.Workers.FlagGenServer do
   @moduledoc """
   Macro to configure a genserver that listen to a specific config flag
   """
