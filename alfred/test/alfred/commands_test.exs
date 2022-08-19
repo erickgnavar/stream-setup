@@ -33,6 +33,16 @@ defmodule Alfred.CommandsTest do
       assert {:error, %Ecto.Changeset{}} = Commands.create_command(@invalid_attrs)
     end
 
+    test "create_command/1 should return error when result is missed and it has type text" do
+      attrs = %{trigger: "test", type: "text"}
+      assert {:error, %Ecto.Changeset{}} = Commands.create_command(attrs)
+    end
+
+    test "create_command/1 should create when data is valid for text type" do
+      attrs = %{trigger: "test", type: "text", result: "this is a result message"}
+      assert {:ok, %Command{} = _command} = Commands.create_command(attrs)
+    end
+
     test "update_command/2 with valid data updates the command" do
       command = command_fixture()
 
