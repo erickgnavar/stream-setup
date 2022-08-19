@@ -118,6 +118,8 @@ defmodule Alfred.Commands do
     |> handle_command()
   end
 
+  @spec handle_command(Command.t() | nil) ::
+          {:ok, String.t()} | {:ok, :noreply} | {:error, String.t()}
   defp handle_command(nil) do
     {:error, "Command not found"}
   end
@@ -126,7 +128,13 @@ defmodule Alfred.Commands do
     {:ok, result}
   end
 
-  defp handle_command(%{type: :code, result: _result}) do
-    {:ok, :noreply}
+  defp handle_command(%{type: :code, trigger: trigger, result: _result}) do
+    with module <- Module.concat(Alfred.Commands.Handlers, "#{Macro.camelize(trigger)}Handler"),
+         true <- Code.ensure_loaded?(module) do
+      module.execute()
+    else
+      false ->
+        {:error, "handler module for #{trigger} not found"}
+    end
   end
 end
