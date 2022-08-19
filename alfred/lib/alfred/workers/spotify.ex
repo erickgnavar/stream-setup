@@ -36,6 +36,12 @@ defmodule Alfred.Workers.Spotify do
            artist: %{
              name: get_in(payload, ["item", "artists"]) |> List.first() |> Map.get("name")
            },
+           playlist_url:
+             if get_in(payload, ["context", "type"]) == "playlist" do
+               get_in(payload, ["context", "external_urls", "spotify"])
+             else
+               nil
+             end,
            album: %{
              name: get_in(payload, ["item", "album", "name"]),
              # take second cover image
