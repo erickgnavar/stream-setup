@@ -6,9 +6,9 @@ defmodule Alfred.Commands.Handlers.PlaylistHandler do
   alias Alfred.Workers.Spotify
 
   def execute do
-    case Spotify.get_playlist() do
+    case Spotify.get_current_song() do
       nil -> {:ok, :noreply}
-      url -> {:ok, url}
+      %{playlist_url: url} -> {:ok, url}
     end
   end
 end

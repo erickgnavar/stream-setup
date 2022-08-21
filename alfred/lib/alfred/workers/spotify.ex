@@ -64,15 +64,6 @@ defmodule Alfred.Workers.Spotify do
     end
   end
 
-  def get_playlist do
-    __MODULE__
-    |> GenServer.call(:get_current_song)
-    |> case do
-      nil -> nil
-      %{playlist_url: playlist_url} -> playlist_url
-    end
-  end
-
   @doc """
   Get current playing song
   """
