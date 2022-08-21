@@ -5,10 +5,15 @@ defmodule Alfred.Workers.Git do
   use Alfred.Workers.FlagGenServer, flag: "flags.git"
 
   alias Alfred.Core
-  alias Phoenix.PubSub
-
-  @overlay_topic AlfredWeb.OverlayLive.topic_name()
   @update_interval :timer.seconds(1)
+
+  @doc """
+  Get diffs from current working directory
+  """
+  @spec get_diffs :: [map]
+  def get_diffs do
+    GenServer.call(__MODULE__, :get_diffs)
+  end
 
   @impl true
   def handle_continue(:setup_state, state) do
@@ -35,6 +40,11 @@ defmodule Alfred.Workers.Git do
   end
 
   @impl true
+  def handle_call(:get_diffs, _from, state) do
+    {:reply, state.diffs, state}
+  end
+
+  @impl true
   def handle_info(:get_diffs, %{project_dir: project_dir} = state) do
     diffs =
       if state.flag and File.dir?(Path.join(project_dir, ".git")) do
@@ -58,11 +68,6 @@ defmodule Alfred.Workers.Git do
       end
 
     Process.send_after(self(), :get_diffs, @update_interval)
-
-    # only notify if diffs changed
-    if diffs != state.diffs do
-      PubSub.broadcast(Alfred.PubSub, @overlay_topic, {:new_project_diffs, diffs})
-    end
 
     {:noreply, Map.put(state, :diffs, diffs)}
   end
