@@ -12,14 +12,14 @@ defmodule Alfred.Workers.Spotify do
   @update_interval :timer.seconds(3)
 
   def post_init(state) do
-    Process.send_after(self(), :get_current_song, @update_interval)
+    Process.send_after(self(), :fetch_current_song, @update_interval)
     # TODO: add auto refresh token loop
 
-    state
+    Map.merge(state, %{playing_song: nil})
   end
 
-  @spec get_current_song :: {:ok, map} | {:error, String.t() | atom}
-  def get_current_song do
+  @spec fetch_current_song :: {:ok, map} | {:error, String.t() | atom}
+  def fetch_current_song do
     url = "https://api.spotify.com/v1/me/player/currently-playing"
     %{value: access_token} = Core.get_config_param("spotify.access_token")
 
@@ -56,22 +56,36 @@ defmodule Alfred.Workers.Spotify do
     end
   end
 
+  def get_playlist do
+    __MODULE__
+    |> GenServer.call(:get_current_song)
+    |> case do
+      nil -> nil
+      %{playlist_url: playlist_url} -> playlist_url
+    end
+  end
+
   @impl true
-  def handle_info(:get_current_song, state) do
+  def handle_call(:get_current_song, _from, state) do
+    {:reply, state.playing_song, state}
+  end
+
+  @impl true
+  def handle_info(:fetch_current_song, state) do
     current_song =
       with true <- state.flag,
-           {:ok, song} <- get_current_song() do
+           {:ok, song} <- fetch_current_song() do
         song
       else
         false -> nil
         {:error, _error} -> nil
       end
 
-    Process.send_after(self(), :get_current_song, @update_interval)
+    Process.send_after(self(), :fetch_current_song, @update_interval)
 
     # notify overlay process
     PubSub.broadcast(Alfred.PubSub, @overlay_topic, {:playing_song, current_song})
 
-    {:noreply, state}
+    {:noreply, Map.put(state, :playing_song, current_song)}
   end
 end
