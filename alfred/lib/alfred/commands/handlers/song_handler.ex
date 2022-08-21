@@ -10,15 +10,20 @@ defmodule Alfred.Commands.Handlers.SongHandler do
   @overlay_topic AlfredWeb.OverlayLive.topic_name()
 
   def execute do
-    current_song = Spotify.get_current_song()
-    PubSub.broadcast(Alfred.PubSub, @overlay_topic, {:playing_song, current_song})
+    case Spotify.get_current_song() do
+      nil ->
+        {:ok, :noreply}
 
-    Task.async(fn ->
-      Process.sleep(@show_time)
+      current_song ->
+        PubSub.broadcast(Alfred.PubSub, @overlay_topic, {:playing_song, current_song})
 
-      PubSub.broadcast(Alfred.PubSub, @overlay_topic, {:playing_song, nil})
-    end)
+        Task.async(fn ->
+          Process.sleep(@show_time)
 
-    {:ok, :noreply}
+          PubSub.broadcast(Alfred.PubSub, @overlay_topic, {:playing_song, nil})
+        end)
+
+        {:ok, "🎵 #{current_song.name} - #{current_song.artist.name} 🎵"}
+    end
   end
 end
