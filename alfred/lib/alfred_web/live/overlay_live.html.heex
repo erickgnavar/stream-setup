@@ -1,58 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <%= csrf_meta_tag() %>
-    <%= live_title_tag assigns[:page_title] || "Alfred", suffix: " · Phoenix Framework" %>
-    <link phx-track-static rel="stylesheet" href={Routes.static_path(@socket, "/assets/app.css")}/>
-    <script defer phx-track-static type="text/javascript" src={Routes.static_path(@socket, "/assets/app.js")}></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet"/>
-  </head>
-  <body>
-    <header class="topbar">
-      <div class="topbar-inner">
-        <span>
-          <!-- color copied from twitter website -->
-          <i class="fa-brands fa-twitter" style="color: #1D9BF0"></i> @erickgnavar
-        </span>
-      </div>
-    </header>
-    <%= unless is_nil(@image_url) do %>
-    <img src={@image_url} class="current-image image-enter" />
-    <% end %>
+<header class="topbar">
+  <div class="topbar-inner">
+    <span>
+      <!-- color copied from twitter website -->
+      <i class="fa-brands fa-twitter" style="color: #1D9BF0"></i> @erickgnavar
+    </span>
+  </div>
+</header>
+<%= unless is_nil(@image_url) do %>
+<img src={@image_url} class="current-image image-enter" />
+<% end %>
 
-    <div class="project-diffs">
-      <table>
-        <tbody>
-          <%= for diff <- @project_diffs do %>
-            <tr>
-              <td class="diff-add">
-                +<%= diff.add %>
-              </td>
-              <td class="diff-delete">
-                -<%= diff.delete %>
-              </td>
-              <td class="diff-filename">
-                <%= diff.filename %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
+<div class="project-diffs">
+  <table>
+    <tbody>
+      <%= for diff <- @project_diffs do %>
+      <tr>
+        <td class="diff-add">
+          +<%= diff.add %>
+        </td>
+        <td class="diff-delete">
+          -<%= diff.delete %>
+        </td>
+        <td class="diff-filename">
+          <%= diff.filename %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
-    <%= unless is_nil(@playing_song) do %>
-    <div class="playing-song-container">
-      <img src={@playing_song.album.image_url} />
-      <div class="song-name">
-        <%= @playing_song.name %>
-      </div>
-      <div>
-        <%= @playing_song.artist.name %> - <%= @playing_song.album.name %>
-      </div>
-    </div>
-    <% end %>
-  </body>
-</html>
+<%= unless is_nil(@playing_song) do %>
+<div class="playing-song-container">
+  <img src={@playing_song.album.image_url} />
+  <div class="song-name">
+    <%= @playing_song.name %>
+  </div>
+  <div>
+    <%= @playing_song.artist.name %> - <%= @playing_song.album.name %>
+  </div>
+</div>
+<% end %>
