@@ -1,0 +1,30 @@
+<h1>Listing Commands</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Trigger</th>
+      <th>Type</th>
+      <th>Result</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for command <- @commands do %>
+    <tr>
+      <td><%= command.trigger %></td>
+      <td><%= command.type %></td>
+      <td><%= command.result %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.command_path(@conn, :show, command) %></span>
+        <span><%= link "Edit", to: Routes.command_path(@conn, :edit, command) %></span>
+        <span><%= link "Delete", to: Routes.command_path(@conn, :delete, command), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Command", to: Routes.command_path(@conn, :new) %></span>

@@ -1,0 +1,23 @@
+<h1>Show Command</h1>
+
+<ul>
+
+  <li>
+    <strong>Trigger:</strong>
+    <%= @command.trigger %>
+  </li>
+
+  <li>
+    <strong>Type:</strong>
+    <%= @command.type %>
+  </li>
+
+  <li>
+    <strong>Result:</strong>
+    <%= @command.result %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.command_path(@conn, :edit, @command) %></span> |
+<span><%= link "Back", to: Routes.command_path(@conn, :index) %></span>

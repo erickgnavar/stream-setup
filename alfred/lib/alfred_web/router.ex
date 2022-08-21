@@ -25,6 +25,8 @@ defmodule AlfredWeb.Router do
 
     live "/overlay", OverlayLive
     live "/admin", AdminLive
+
+    resources "/commands", CommandController
   end
 
   scope "/api", AlfredWeb do
