@@ -10,7 +10,8 @@ defmodule Alfred.Workers.Git do
   @overlay_topic AlfredWeb.OverlayLive.topic_name()
   @update_interval :timer.seconds(1)
 
-  def post_init(state) do
+  @impl true
+  def handle_continue(:setup_state, state) do
     # in case this is pre configured we use the value from database
     project_dir =
       case Core.get_config_param("git_project_dir") do
@@ -20,8 +21,9 @@ defmodule Alfred.Workers.Git do
 
     # start a loop to have diffs list always updated
     Process.send_after(self(), :get_diffs, @update_interval)
+    new_state = Map.merge(state, %{project_dir: project_dir, diffs: []})
 
-    Map.merge(state, %{project_dir: project_dir, diffs: []})
+    {:noreply, new_state}
   end
 
   @doc """

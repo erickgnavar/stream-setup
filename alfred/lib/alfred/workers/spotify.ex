@@ -11,9 +11,9 @@ defmodule Alfred.Workers.Spotify do
   @overlay_topic AlfredWeb.OverlayLive.topic_name()
   @update_interval :timer.seconds(3)
 
-  def post_init(state) do
+  @impl true
+  def handle_continue(:setup_state, state) do
     Process.send_after(self(), :fetch_current_song, @update_interval)
-
     # TODO: add a way to receive newest token when config value is saved
     access_token =
       case Core.get_config_param("spotify.access_token") do
@@ -24,7 +24,9 @@ defmodule Alfred.Workers.Spotify do
 
     # TODO: add auto refresh token loop
 
-    Map.merge(state, %{playing_song: nil, access_token: access_token})
+    new_state = Map.merge(state, %{playing_song: nil, access_token: access_token})
+
+    {:noreply, new_state}
   end
 
   @spec fetch_current_song(String.t()) :: {:ok, map} | {:error, String.t() | atom}

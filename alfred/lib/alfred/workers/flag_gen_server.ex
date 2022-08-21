@@ -21,7 +21,9 @@ defmodule Alfred.Workers.FlagGenServer do
       @impl true
       def init(state) do
         Phoenix.PubSub.subscribe(Alfred.PubSub, Alfred.Core.flags_topic())
-        {:ok, post_init(state)}
+
+        # modules that use this macro should implement handle_continue/2
+        {:ok, state, {:continue, :setup_state}}
       end
 
       @impl true
