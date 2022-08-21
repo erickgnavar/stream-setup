@@ -5,10 +5,8 @@ defmodule Alfred.Workers.Spotify do
   use Alfred.Workers.FlagGenServer, flag: "flags.spotify"
 
   alias Alfred.Core
-  alias Phoenix.PubSub
   require Logger
 
-  @overlay_topic AlfredWeb.OverlayLive.topic_name()
   @update_interval :timer.seconds(3)
 
   @impl true
@@ -75,6 +73,19 @@ defmodule Alfred.Workers.Spotify do
     end
   end
 
+  @doc """
+  Get current playing song
+  """
+  @spec get_current_song :: struct | nil
+  def get_current_song do
+    __MODULE__
+    |> GenServer.call(:get_current_song)
+    |> case do
+      nil -> nil
+      song -> song
+    end
+  end
+
   @impl true
   def handle_call(:get_current_song, _from, state) do
     {:reply, state.playing_song, state}
@@ -94,9 +105,6 @@ defmodule Alfred.Workers.Spotify do
       end
 
     Process.send_after(self(), :fetch_current_song, @update_interval)
-
-    # notify overlay process
-    PubSub.broadcast(Alfred.PubSub, @overlay_topic, {:playing_song, current_song})
 
     {:noreply, Map.put(state, :playing_song, current_song)}
   end
