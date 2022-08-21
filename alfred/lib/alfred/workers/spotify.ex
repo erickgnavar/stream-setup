@@ -13,15 +13,23 @@ defmodule Alfred.Workers.Spotify do
 
   def post_init(state) do
     Process.send_after(self(), :fetch_current_song, @update_interval)
+
+    # TODO: add a way to receive newest token when config value is saved
+    access_token =
+      case Core.get_config_param("spotify.access_token") do
+        nil -> nil
+        %{value: ""} -> nil
+        %{value: access_token} -> access_token
+      end
+
     # TODO: add auto refresh token loop
 
-    Map.merge(state, %{playing_song: nil})
+    Map.merge(state, %{playing_song: nil, access_token: access_token})
   end
 
-  @spec fetch_current_song :: {:ok, map} | {:error, String.t() | atom}
-  def fetch_current_song do
+  @spec fetch_current_song(String.t()) :: {:ok, map} | {:error, String.t() | atom}
+  def fetch_current_song(access_token) do
     url = "https://api.spotify.com/v1/me/player/currently-playing"
-    %{value: access_token} = Core.get_config_param("spotify.access_token")
 
     case HTTPoison.get(url, [{"authorization", "Bearer #{access_token}"}]) do
       {:ok, %HTTPoison.Response{status_code: 204}} ->
@@ -74,10 +82,12 @@ defmodule Alfred.Workers.Spotify do
   def handle_info(:fetch_current_song, state) do
     current_song =
       with true <- state.flag,
-           {:ok, song} <- fetch_current_song() do
+           access_token when not is_nil(state.access_token) <- state.access_token,
+           {:ok, song} <- fetch_current_song(access_token) do
         song
       else
         false -> nil
+        nil -> nil
         {:error, _error} -> nil
       end
 
