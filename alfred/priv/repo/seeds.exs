@@ -30,7 +30,10 @@ config_params =
     "flags.git",
     "flags.spotify",
     "spotify.access_token",
-    "spotify.refresh_token"
+    "spotify.refresh_token",
+    "twitch.access_token",
+    "twitch.refresh_token",
+    "twitch.user_id"
   ]
   |> Enum.map(&%{key: &1, value: ""})
   |> Enum.map(&Map.put(&1, :inserted_at, utc_now))

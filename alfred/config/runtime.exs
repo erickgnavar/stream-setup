@@ -72,3 +72,8 @@ end
 config :spotify_ex,
   client_id: System.get_env("SPOTIFY_CLIENT_ID"),
   secret_key: System.get_env("SPOTIFY_SECRET_KEY")
+
+config :ueberauth, Ueberauth.Strategy.Twitch.OAuth,
+  client_id: System.get_env("TWITCH_CLIENT_ID"),
+  client_secret: System.get_env("TWITCH_CLIENT_SECRET"),
+  redirect_uri: System.get_env("TWITCH_REDIRECT_URI")

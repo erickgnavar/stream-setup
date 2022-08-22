@@ -23,7 +23,9 @@ defmodule Alfred.Application do
       # git project watcher to compute diffs
       Alfred.Workers.Git,
       # Fetch Spotify current song
-      Alfred.Workers.Spotify
+      Alfred.Workers.Spotify,
+      # Fetch data from Twitch
+      Alfred.Workers.Twitch
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

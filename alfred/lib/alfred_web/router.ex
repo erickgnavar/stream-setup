@@ -2,6 +2,7 @@ defmodule AlfredWeb.Router do
   use AlfredWeb, :router
 
   pipeline :browser do
+    plug Ueberauth
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
@@ -18,6 +19,13 @@ defmodule AlfredWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+  end
+
+  scope "/auth", AlfredWeb do
+    pipe_through :browser
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
   end
 
   scope "/", AlfredWeb do

@@ -53,6 +53,16 @@
           <%= link "Login", to: Routes.spotify_path(@socket, :authorize), id: "btn-login-spotify" %>
         </td>
       </tr>
+      <tr>
+        <td>
+          <!-- color copied from twitch website -->
+          <i class="fa-brands fa-twitch" style="color: #5815BA"></i>
+          Twitch
+        </td>
+        <td>
+          <%= link "Login", to: Routes.auth_path(@socket, :request, "twitch") %>
+        </td>
+      </tr>
     </tbody>
   </table>
 </div>
