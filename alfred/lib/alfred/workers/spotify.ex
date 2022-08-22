@@ -12,17 +12,10 @@ defmodule Alfred.Workers.Spotify do
   @impl true
   def handle_continue(:setup_state, state) do
     Process.send_after(self(), :fetch_current_song, @update_interval)
-    # TODO: add a way to receive newest token when config value is saved
-    access_token =
-      case Core.get_config_param("spotify.access_token") do
-        nil -> nil
-        %{value: ""} -> nil
-        %{value: access_token} -> access_token
-      end
 
     # TODO: add auto refresh token loop
 
-    new_state = Map.merge(state, %{playing_song: nil, access_token: access_token})
+    new_state = Map.merge(state, %{playing_song: nil, access_token: read_access_token()})
 
     {:noreply, new_state}
   end
@@ -77,9 +70,21 @@ defmodule Alfred.Workers.Spotify do
     end
   end
 
+  @doc """
+  Read credentials from database and load them into process state
+  """
+  def load_credentials do
+    GenServer.cast(__MODULE__, :load_credentials)
+  end
+
   @impl true
   def handle_call(:get_current_song, _from, state) do
     {:reply, state.playing_song, state}
+  end
+
+  @impl true
+  def handle_cast(:load_credentials, state) do
+    {:noreply, Map.put(state, :access_token, read_access_token())}
   end
 
   @impl true
@@ -98,5 +103,14 @@ defmodule Alfred.Workers.Spotify do
     Process.send_after(self(), :fetch_current_song, @update_interval)
 
     {:noreply, Map.put(state, :playing_song, current_song)}
+  end
+
+  @spec read_access_token :: String.t() | nil
+  defp read_access_token do
+    case Core.get_config_param("spotify.access_token") do
+      nil -> nil
+      %{value: ""} -> nil
+      %{value: access_token} -> access_token
+    end
   end
 end
