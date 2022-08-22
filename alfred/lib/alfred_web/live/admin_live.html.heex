@@ -1,25 +1,58 @@
 <header>Admin</header>
 <div class="flags">
-  <ul>
-    <%= for flag <- @flags do %>
-    <li>
-      <%= flag.key %>
-      <%= if flag.value == "true" do %>
-      <span class="flag-on">ON</span>
-      <% else %>
-      <span class="flag-off">OFF</span>
+  <h3>Flags</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <td>Flag</td>
+        <td>Status</td>
+        <td>Options</td>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for flag <- @flags do %>
+        <tr>
+          <td>
+            <%= flag.key %>
+          </td>
+          <td>
+            <%= if flag.value == "true" do %>
+              <span class="flag-on">ON</span>
+            <% else %>
+              <span class="flag-off">OFF</span>
+            <% end %>
+          </td>
+          <td>
+            <button type="button" phx-click="toggle-flag" phx-value-key={flag.key}>Toggle</button>
+          </td>
+        </tr>
       <% end %>
-      <button type="button" phx-click="toggle-flag" phx-value-key={flag.key}>Toggle</button>
-    </li>
-    <% end %>
-  </ul>
+    </tbody>
+  </table>
 </div>
 
 <div>
-  <h3>Spotify</h3>
+  <h3>Services</h3>
 
-  <%= link to: Routes.spotify_path(@socket, :authorize) do %>
-  <!-- color copied from spotify website -->
-  <i class="fa-brands fa-spotify" style="color: #44ce75"></i> Login
-  <% end %>
+  <table>
+    <thead>
+      <tr>
+        <td>Service</td>
+        <td>Options</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <!-- color copied from spotify website -->
+          <i class="fa-brands fa-spotify" style="color: #44ce75"></i>
+          Spotify
+        </td>
+        <td>
+          <%= link "Login", to: Routes.spotify_path(@socket, :authorize) %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
