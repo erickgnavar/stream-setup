@@ -85,10 +85,15 @@ defmodule Alfred.Core do
     |> update_pubsub()
   end
 
+  @doc """
+  Update a config param record, if the record doesn't exist create a new one
+  with the received data
+  """
+  @spec update_config_param(String.t(), String.t()) :: {:ok, ConfigParam.t()}
   def update_config_param(key, value) when is_binary(key) and is_binary(value) do
     case get_config_param(key) do
       nil ->
-        nil
+        create_config_param(%{"key" => key, "value" => value})
 
       config ->
         update_config_param(config, %{"value" => value})
