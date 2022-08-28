@@ -20,6 +20,24 @@ defmodule Alfred.Workers.Twitch do
     {:noreply, new_state}
   end
 
+  @impl true
+  def handle_cast(:refresh_token, state) do
+    Logger.info("Refresing Twitch access token")
+
+    with %{value: refresh_token} <- Core.get_config_param("secret.twitch.refresh_token"),
+         {:ok, payload} <- refresh_token_request(refresh_token) do
+      Core.update_config_param("secret.twitch.access_token", payload["access_token"])
+      Core.update_config_param("secret.twitch.refresh_token", payload["refresh_token"])
+
+      {:noreply, Map.put(state, :access_token, payload["access_token"])}
+    else
+      error ->
+        Logger.error("Error when trying to refresh Twitch access token: #{inspect(error)}")
+
+        {:noreply, state}
+    end
+  end
+
   def handle_info(:notify_last_follow, state) do
     with true <- state.flag,
          %{access_token: access_token, user_id: user_id} <- state.credentials,
@@ -29,6 +47,30 @@ defmodule Alfred.Workers.Twitch do
 
     Process.send_after(self(), :notify_last_follow, @update_interval)
     {:noreply, state}
+  end
+
+  @spec refresh_token_request(String.t()) :: {:ok, map} | {:error, String.t()}
+  defp refresh_token_request(refresh_token) do
+    url = "https://id.twitch.tv/oauth2/token"
+    headers = [{"content-type", "application/x-www-form-urlencoded"}]
+
+    payload =
+      :ueberauth
+      |> Application.get_env(Ueberauth.Strategy.Twitch.OAuth)
+      |> Map.new()
+      |> Map.take([:client_id, :client_secret])
+      |> Map.merge(%{
+        grant_type: "refresh_token",
+        refresh_token: refresh_token
+      })
+
+    case HTTPoison.post(url, URI.encode_query(payload), headers) do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+        Jason.decode(body)
+
+      error ->
+        {:error, error}
+    end
   end
 
   @spec get_latest_follow(String.t(), String.t()) :: {:ok, map} | {:error, String.t() | atom}
@@ -53,6 +95,11 @@ defmodule Alfred.Workers.Twitch do
           [] -> {:error, "no follows"}
           [latest | _tail] -> {:ok, latest["from_name"]}
         end
+
+      {:ok, %HTTPoison.Response{status_code: 401}} ->
+        GenServer.cast(__MODULE__, :refresh_token)
+
+        {:error, :expired_token}
 
       error ->
         Logger.error("Twitch request error: #{inspect(error)}")
