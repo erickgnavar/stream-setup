@@ -9,57 +9,6 @@ defmodule Alfred.Workers.Spotify do
 
   @update_interval :timer.seconds(3)
 
-  @impl true
-  def handle_continue(:setup_state, state) do
-    Process.send_after(self(), :fetch_current_song, @update_interval)
-
-    new_state = Map.merge(state, %{playing_song: nil, access_token: read_access_token()})
-
-    {:noreply, new_state}
-  end
-
-  @spec fetch_current_song(String.t()) :: {:ok, map} | {:error, String.t() | atom}
-  def fetch_current_song(access_token) do
-    url = "https://api.spotify.com/v1/me/player/currently-playing"
-
-    case HTTPoison.get(url, [{"authorization", "Bearer #{access_token}"}]) do
-      {:ok, %HTTPoison.Response{status_code: 204}} ->
-        {:error, :no_playing}
-
-      {:ok, %HTTPoison.Response{status_code: 401}} ->
-        GenServer.cast(__MODULE__, :refresh_token)
-
-        {:error, :expired_token}
-
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        {:ok, payload} = Jason.decode(body)
-
-        {:ok,
-         %{
-           name: get_in(payload, ["item", "name"]),
-           artist: %{
-             name: get_in(payload, ["item", "artists"]) |> List.first() |> Map.get("name")
-           },
-           playlist_url:
-             if get_in(payload, ["context", "type"]) == "playlist" do
-               get_in(payload, ["context", "external_urls", "spotify"])
-             else
-               nil
-             end,
-           album: %{
-             name: get_in(payload, ["item", "album", "name"]),
-             # take second cover image
-             image_url:
-               payload |> get_in(["item", "album", "images"]) |> Enum.at(1) |> Map.get("url")
-           }
-         }}
-
-      error ->
-        Logger.error("Spotify request error: #{inspect(error)}")
-        {:error, "unexpected error"}
-    end
-  end
-
   @doc """
   Get current playing song
   """
@@ -71,6 +20,15 @@ defmodule Alfred.Workers.Spotify do
       nil -> nil
       song -> song
     end
+  end
+
+  @impl true
+  def handle_continue(:setup_state, state) do
+    Process.send_after(self(), :fetch_current_song, @update_interval)
+
+    new_state = Map.merge(state, %{playing_song: nil, access_token: read_access_token()})
+
+    {:noreply, new_state}
   end
 
   @impl true
@@ -116,6 +74,48 @@ defmodule Alfred.Workers.Spotify do
     Process.send_after(self(), :fetch_current_song, @update_interval)
 
     {:noreply, Map.put(state, :playing_song, current_song)}
+  end
+
+  @spec fetch_current_song(String.t()) :: {:ok, map} | {:error, String.t() | atom}
+  defp fetch_current_song(access_token) do
+    url = "https://api.spotify.com/v1/me/player/currently-playing"
+
+    case HTTPoison.get(url, [{"authorization", "Bearer #{access_token}"}]) do
+      {:ok, %HTTPoison.Response{status_code: 204}} ->
+        {:error, :no_playing}
+
+      {:ok, %HTTPoison.Response{status_code: 401}} ->
+        GenServer.cast(__MODULE__, :refresh_token)
+
+        {:error, :expired_token}
+
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+        {:ok, payload} = Jason.decode(body)
+
+        {:ok,
+         %{
+           name: get_in(payload, ["item", "name"]),
+           artist: %{
+             name: get_in(payload, ["item", "artists"]) |> List.first() |> Map.get("name")
+           },
+           playlist_url:
+             if get_in(payload, ["context", "type"]) == "playlist" do
+               get_in(payload, ["context", "external_urls", "spotify"])
+             else
+               nil
+             end,
+           album: %{
+             name: get_in(payload, ["item", "album", "name"]),
+             # take second cover image
+             image_url:
+               payload |> get_in(["item", "album", "images"]) |> Enum.at(1) |> Map.get("url")
+           }
+         }}
+
+      error ->
+        Logger.error("Spotify request error: #{inspect(error)}")
+        {:error, "unexpected error"}
+    end
   end
 
   @spec read_access_token :: String.t() | nil

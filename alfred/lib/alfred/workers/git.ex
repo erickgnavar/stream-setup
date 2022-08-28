@@ -15,6 +15,14 @@ defmodule Alfred.Workers.Git do
     GenServer.call(__MODULE__, :get_diffs)
   end
 
+  @doc """
+  Change current project dir, all diffs will be calculated using new dir
+  """
+  @spec change_project_dir(String.t()) :: any
+  def change_project_dir(new_project_dir) do
+    GenServer.cast(__MODULE__, {:change_project_dir, new_project_dir})
+  end
+
   @impl true
   def handle_continue(:setup_state, state) do
     # in case this is pre configured we use the value from database
@@ -29,14 +37,6 @@ defmodule Alfred.Workers.Git do
     new_state = Map.merge(state, %{project_dir: project_dir, diffs: []})
 
     {:noreply, new_state}
-  end
-
-  @doc """
-  Change current project dir, all diffs will be calculated using new dir
-  """
-  @spec change_project_dir(String.t()) :: any
-  def change_project_dir(new_project_dir) do
-    GenServer.cast(__MODULE__, {:change_project_dir, new_project_dir})
   end
 
   @impl true

@@ -20,6 +20,17 @@ defmodule Alfred.Workers.Twitch do
     {:noreply, new_state}
   end
 
+  def handle_info(:notify_last_follow, state) do
+    with true <- state.flag,
+         %{access_token: access_token, user_id: user_id} <- state.credentials,
+         {:ok, follow} <- get_latest_follow(access_token, user_id) do
+      PubSub.broadcast(Alfred.PubSub, @overlay_topic, {:last_follow, follow})
+    end
+
+    Process.send_after(self(), :notify_last_follow, @update_interval)
+    {:noreply, state}
+  end
+
   @spec get_latest_follow(String.t(), String.t()) :: {:ok, map} | {:error, String.t() | atom}
   defp get_latest_follow(access_token, user_id) do
     %{client_id: client_id} =
@@ -47,17 +58,6 @@ defmodule Alfred.Workers.Twitch do
         Logger.error("Twitch request error: #{inspect(error)}")
         {:error, "unexpected error"}
     end
-  end
-
-  def handle_info(:notify_last_follow, state) do
-    with true <- state.flag,
-         %{access_token: access_token, user_id: user_id} <- state.credentials,
-         {:ok, follow} <- get_latest_follow(access_token, user_id) do
-      PubSub.broadcast(Alfred.PubSub, @overlay_topic, {:last_follow, follow})
-    end
-
-    Process.send_after(self(), :notify_last_follow, @update_interval)
-    {:noreply, state}
   end
 
   @spec read_credentials :: String.t() | nil
