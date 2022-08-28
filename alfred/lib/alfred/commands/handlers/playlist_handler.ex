@@ -7,8 +7,8 @@ defmodule Alfred.Commands.Handlers.PlaylistHandler do
 
   def execute do
     case Spotify.get_current_song() do
-      nil -> {:ok, :noreply}
-      %{playlist_url: url} -> {:ok, url}
+      %{playlist_url: url} when is_binary(url) -> {:ok, url}
+      _ -> {:ok, :noreply}
     end
   end
 end
