@@ -45,7 +45,7 @@ defmodule AlfredWeb.Router do
     pipe_through :browser
     pipe_through :admin
 
-    live "", AdminLive
+    live "/", AdminLive
     resources "/commands", CommandController
   end
 
