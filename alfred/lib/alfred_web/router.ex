@@ -11,6 +11,10 @@ defmodule AlfredWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :admin do
+    plug AlfredWeb.SessionPlug
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -24,6 +28,9 @@ defmodule AlfredWeb.Router do
   scope "/auth", AlfredWeb do
     pipe_through :browser
 
+    get "/login", AuthController, :new_session
+    post "/login", AuthController, :create_session
+    delete "/logout", AuthController, :logout
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
   end
@@ -32,9 +39,15 @@ defmodule AlfredWeb.Router do
     pipe_through :browser
 
     live "/overlay", OverlayLive
-    live "/admin", AdminLive
 
     resources "/commands", CommandController
+  end
+
+  scope "/", AlfredWeb do
+    pipe_through :browser
+    pipe_through :admin
+
+    live "/admin", AdminLive
   end
 
   scope "/api", AlfredWeb do

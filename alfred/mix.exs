@@ -50,7 +50,8 @@ defmodule Alfred.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:exirc, "~> 2.0"},
       {:spotify_ex, "~> 2.3"},
-      {:ueberauth_twitch, "~> 0.1.0"}
+      {:ueberauth_twitch, "~> 0.1.0"},
+      {:bcrypt_elixir, "~> 3.0"}
     ]
   end
 

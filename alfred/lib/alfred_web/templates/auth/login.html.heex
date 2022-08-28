@@ -1,0 +1,5 @@
+<form action={Routes.auth_path(@conn, :new_session)} method="POST">
+  <%= csrf_input_tag(Routes.auth_path(@conn, :new_session)) %>
+  <input name="password" type="password" />
+  <button type="submit">Login</button>
+</form>

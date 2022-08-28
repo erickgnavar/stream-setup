@@ -1,4 +1,7 @@
-<header>Admin</header>
+<header>
+  Admin
+  <%= link "Log out", to: Routes.auth_path(@socket, :logout), method: :delete %>
+</header>
 <div class="flags">
   <h3>Flags</h3>
 
