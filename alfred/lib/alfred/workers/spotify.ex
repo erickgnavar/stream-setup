@@ -13,8 +13,6 @@ defmodule Alfred.Workers.Spotify do
   def handle_continue(:setup_state, state) do
     Process.send_after(self(), :fetch_current_song, @update_interval)
 
-    # TODO: add auto refresh token loop
-
     new_state = Map.merge(state, %{playing_song: nil, access_token: read_access_token()})
 
     {:noreply, new_state}
@@ -27,6 +25,11 @@ defmodule Alfred.Workers.Spotify do
     case HTTPoison.get(url, [{"authorization", "Bearer #{access_token}"}]) do
       {:ok, %HTTPoison.Response{status_code: 204}} ->
         {:error, :no_playing}
+
+      {:ok, %HTTPoison.Response{status_code: 401}} ->
+        GenServer.cast(__MODULE__, :refresh_token)
+
+        {:error, :expired_token}
 
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         {:ok, payload} = Jason.decode(body)
@@ -70,21 +73,31 @@ defmodule Alfred.Workers.Spotify do
     end
   end
 
-  @doc """
-  Read credentials from database and load them into process state
-  """
-  def load_credentials do
-    GenServer.cast(__MODULE__, :load_credentials)
-  end
-
   @impl true
   def handle_call(:get_current_song, _from, state) do
     {:reply, state.playing_song, state}
   end
 
   @impl true
-  def handle_cast(:load_credentials, state) do
-    {:noreply, Map.put(state, :access_token, read_access_token())}
+  def handle_cast(:refresh_token, state) do
+    Logger.info("Refresing Spotify access token")
+
+    with %{value: access_token} <- Core.get_config_param("secret.spotify.access_token"),
+         %{value: refresh_token} <- Core.get_config_param("secret.spotify.refresh_token"),
+         credentials <- Spotify.Credentials.new(access_token, refresh_token),
+         {:ok, %Spotify.Credentials{access_token: new_access_token}} <-
+           Spotify.Authentication.refresh(credentials) do
+      # persist access token in case process crashes, this way newest token will be read
+      # at process startup
+      Core.update_config_param("secret.spotify.access_token", new_access_token)
+
+      {:noreply, Map.put(state, :access_token, new_access_token)}
+    else
+      error ->
+        Logger.error("Error when trying to refresh Spotify access token: #{inspect(error)}")
+
+        {:noreply, state}
+    end
   end
 
   @impl true

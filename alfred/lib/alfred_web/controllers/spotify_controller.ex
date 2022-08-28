@@ -15,7 +15,6 @@ defmodule AlfredWeb.SpotifyController do
             "spotify_refresh_token" => refresh_token
           } = Map.take(conn.cookies, ["spotify_access_token", "spotify_refresh_token"])
 
-          # TODO: save time when token was created, this could be used to refresh token
           Core.update_config_param("secret.spotify.access_token", access_token)
           Core.update_config_param("secret.spotify.refresh_token", refresh_token)
 
