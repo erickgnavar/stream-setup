@@ -31,6 +31,15 @@ defmodule AlfredWeb.ConnCase do
     end
   end
 
+  def auth(%{conn: conn}) do
+    new_conn =
+      conn
+      |> Phoenix.ConnTest.init_test_session(%{})
+      |> Plug.Conn.put_session(:authenticated, true)
+
+    %{conn: new_conn}
+  end
+
   setup tags do
     Alfred.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}

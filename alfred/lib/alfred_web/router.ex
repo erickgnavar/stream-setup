@@ -39,15 +39,14 @@ defmodule AlfredWeb.Router do
     pipe_through :browser
 
     live "/overlay", OverlayLive
-
-    resources "/commands", CommandController
   end
 
-  scope "/", AlfredWeb do
+  scope "/admin", AlfredWeb do
     pipe_through :browser
     pipe_through :admin
 
-    live "/admin", AdminLive
+    live "", AdminLive
+    resources "/commands", CommandController
   end
 
   scope "/api", AlfredWeb do

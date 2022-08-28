@@ -11,6 +11,8 @@ defmodule AlfredWeb.CommandControllerTest do
   }
   @invalid_attrs %{result: nil, trigger: nil, type: nil}
 
+  setup :auth
+
   describe "index" do
     test "lists all commands", %{conn: conn} do
       conn = get(conn, Routes.command_path(conn, :index))
