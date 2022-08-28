@@ -20,7 +20,7 @@ defmodule Alfred.Workers.Twitch do
   @spec get_latest_follow :: {:ok, map} | {:error, String.t() | atom}
   def get_latest_follow() do
     %{value: user_id} = Core.get_config_param("twitch.user_id")
-    %{value: access_token} = Core.get_config_param("twitch.access_token")
+    %{value: access_token} = Core.get_config_param("secret.twitch.access_token")
 
     %{client_id: client_id} =
       :ueberauth

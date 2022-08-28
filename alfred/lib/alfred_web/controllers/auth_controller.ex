@@ -14,8 +14,8 @@ defmodule AlfredWeb.AuthController do
 
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
     # TODO: separate by provider
-    Core.update_config_param("twitch.access_token", auth.credentials.token)
-    Core.update_config_param("twitch.refresh_token", auth.credentials.refresh_token)
+    Core.update_config_param("secret.twitch.access_token", auth.credentials.token)
+    Core.update_config_param("secret.twitch.refresh_token", auth.credentials.refresh_token)
     Core.update_config_param("twitch.user_id", auth.uid)
 
     conn

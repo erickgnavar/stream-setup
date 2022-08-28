@@ -29,10 +29,10 @@ config_params =
     "git_project_dir",
     "flags.git",
     "flags.spotify",
-    "spotify.access_token",
-    "spotify.refresh_token",
-    "twitch.access_token",
-    "twitch.refresh_token",
+    "secret.spotify.access_token",
+    "secret.spotify.refresh_token",
+    "secret.twitch.access_token",
+    "secret.twitch.refresh_token",
     "twitch.user_id"
   ]
   |> Enum.map(&%{key: &1, value: ""})

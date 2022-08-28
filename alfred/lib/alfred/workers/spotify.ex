@@ -107,7 +107,7 @@ defmodule Alfred.Workers.Spotify do
 
   @spec read_access_token :: String.t() | nil
   defp read_access_token do
-    case Core.get_config_param("spotify.access_token") do
+    case Core.get_config_param("secret.spotify.access_token") do
       nil -> nil
       %{value: ""} -> nil
       %{value: access_token} -> access_token
