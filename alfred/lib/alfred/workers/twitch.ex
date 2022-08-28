@@ -50,7 +50,8 @@ defmodule Alfred.Workers.Twitch do
   end
 
   def handle_info(:notify_last_follow, state) do
-    with {:ok, follow} <- get_latest_follow() do
+    with true <- state.flag,
+         {:ok, follow} <- get_latest_follow() do
       PubSub.broadcast(Alfred.PubSub, @overlay_topic, {:last_follow, follow})
     end
 
