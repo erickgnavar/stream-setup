@@ -14,14 +14,14 @@ defmodule Alfred.Workers.Twitch do
   @impl true
   def handle_continue(:setup_state, state) do
     Process.send_after(self(), :notify_last_follow, @update_interval)
-    {:noreply, state}
+
+    new_state = Map.merge(state, %{credentials: read_credentials()})
+
+    {:noreply, new_state}
   end
 
-  @spec get_latest_follow :: {:ok, map} | {:error, String.t() | atom}
-  def get_latest_follow() do
-    %{value: user_id} = Core.get_config_param("twitch.user_id")
-    %{value: access_token} = Core.get_config_param("secret.twitch.access_token")
-
+  @spec get_latest_follow(String.t(), String.t()) :: {:ok, map} | {:error, String.t() | atom}
+  defp get_latest_follow(access_token, user_id) do
     %{client_id: client_id} =
       :ueberauth
       |> Application.get_env(Ueberauth.Strategy.Twitch.OAuth)
@@ -51,11 +51,36 @@ defmodule Alfred.Workers.Twitch do
 
   def handle_info(:notify_last_follow, state) do
     with true <- state.flag,
-         {:ok, follow} <- get_latest_follow() do
+         %{access_token: access_token, user_id: user_id} <- state.credentials,
+         {:ok, follow} <- get_latest_follow(access_token, user_id) do
       PubSub.broadcast(Alfred.PubSub, @overlay_topic, {:last_follow, follow})
     end
 
     Process.send_after(self(), :notify_last_follow, @update_interval)
     {:noreply, state}
+  end
+
+  @spec read_credentials :: String.t() | nil
+  defp read_credentials do
+    access_token =
+      case Core.get_config_param("secret.twitch.access_token") do
+        nil -> nil
+        %{value: ""} -> nil
+        %{value: access_token} -> access_token
+      end
+
+    user_id =
+      case Core.get_config_param("twitch.user_id") do
+        nil -> nil
+        %{value: ""} -> nil
+        %{value: user_id} -> user_id
+      end
+
+    # these values aren't booleans so we need to use && instead of and
+    if access_token && user_id do
+      %{user_id: user_id, access_token: access_token}
+    else
+      %{}
+    end
   end
 end
