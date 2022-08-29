@@ -6,7 +6,7 @@ defmodule Alfred.Core.ConfigParam do
 
   schema "config_params" do
     field :key, :string
-    field :value, :string
+    field :value, :string, redact: true
 
     timestamps()
   end
