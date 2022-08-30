@@ -48,21 +48,19 @@ defmodule Alfred.Workers.Git do
   def handle_info(:get_diffs, %{project_dir: project_dir} = state) do
     diffs =
       if state.flag and File.dir?(Path.join(project_dir, ".git")) do
-        File.cd!(project_dir, fn ->
-          case System.cmd("git", ["diff", "--numstat"]) do
-            {output, 0} ->
-              output
-              |> String.split("\n")
-              |> Enum.reject(&(&1 == ""))
-              |> Enum.map(&String.split(&1, "\t"))
-              |> Enum.map(fn [add, delete, filename] ->
-                %{add: add, delete: delete, filename: filename}
-              end)
+        case System.cmd("git", ["diff", "--numstat"], cd: project_dir) do
+          {output, 0} ->
+            output
+            |> String.split("\n")
+            |> Enum.reject(&(&1 == ""))
+            |> Enum.map(&String.split(&1, "\t"))
+            |> Enum.map(fn [add, delete, filename] ->
+              %{add: add, delete: delete, filename: filename}
+            end)
 
-            _ ->
-              []
-          end
-        end)
+          _ ->
+            []
+        end
       else
         []
       end
