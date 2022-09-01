@@ -29,7 +29,9 @@ defmodule Alfred.Workers.Twitch do
       Core.update_config_param("secret.twitch.access_token", payload["access_token"])
       Core.update_config_param("secret.twitch.refresh_token", payload["refresh_token"])
 
-      {:noreply, Map.put(state, :access_token, payload["access_token"])}
+      new_credentials = %{state.credentials | access_token: payload["access_token"]}
+
+      {:noreply, Map.put(state, :credentials, new_credentials)}
     else
       error ->
         Logger.error("Error when trying to refresh Twitch access token: #{inspect(error)}")
