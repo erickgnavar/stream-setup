@@ -19,38 +19,39 @@ logger.setLevel(logging.DEBUG)
 logger.addHandler(logging.StreamHandler())
 
 
-async def send_message(message):
+async def send_message(type, data):
     """
     Open a connection and send a message
     """
     message_id = uuid4().hex
-    message["message-id"] = message_id
+    # all request(when we ask for some action) messages need to have op 6
+    payload = {
+        "op": 6,
+        "d": {"requestId": message_id, "requestType": type, "requestData": data},
+    }
 
     # TODO: reuse connection to avoid open a new one on every message
-    async with websockets.connect("ws://localhost:4444") as websocket:
-        await websocket.send(json.dumps(message))
+    async with websockets.connect("ws://localhost:4455") as websocket:
+        # wait for hello message, it should be a op code 0
+        message = await websocket.recv()
+
+        response = {"op": 1, "d": {"rpcVersion": 1}}
+        # send op code 1 message to confirm we have a identified connection
+        await websocket.send(json.dumps(response))
+
+        # send actual message
+        await websocket.send(json.dumps(payload))
 
         return message_id
 
 
 async def change_scene(scene_name):
-    await send_message(
-        {
-            "request-type": "SetCurrentScene",
-            "scene-name": scene_name,
-        }
-    )
+    await send_message("SetCurrentProgramScene", {"sceneName": scene_name})
 
 
 async def toggle_microphone(mute: bool):
     # "Mic" name is defined in obs
-    await send_message(
-        {
-            "request-type": "SetMute",
-            "source": "Mic",
-            "mute": not mute,
-        }
-    )
+    await send_message("SetInputMute", {"inputName": "Mic", "inputMuted": not mute})
 
 
 # these are the identifiers for numeric keyboard
