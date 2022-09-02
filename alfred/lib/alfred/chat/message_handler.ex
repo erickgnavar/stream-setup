@@ -11,13 +11,27 @@ defmodule Alfred.Chat.MessageHandler do
   alias Alfred.Commands
 
   def start_link({client, channel}) do
-    GenServer.start_link(__MODULE__, {client, channel})
+    GenServer.start_link(__MODULE__, {client, channel}, name: __MODULE__)
   end
 
   def init({client, _channel} = state) do
     ExIRC.Client.add_handler(client, self())
 
     {:ok, state}
+  end
+
+  @doc """
+  Post a message into channel chat
+  """
+  @spec post_message(String.t()) :: any
+  def post_message(message) do
+    GenServer.cast(__MODULE__, {:post_message, message})
+  end
+
+  @impl true
+  def handle_cast({:post_message, message}, {client, channel} = state) do
+    :ok = ExIRC.Client.msg(client, :privmsg, channel, message)
+    {:noreply, state}
   end
 
   def handle_info(:logged_in, {client, channel} = state) do
