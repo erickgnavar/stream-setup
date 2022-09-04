@@ -11,6 +11,10 @@ defmodule AlfredWeb.Endpoint do
   ]
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
+  # regular socket to be used in channels
+  socket "/socket", AlfredWeb.UserSocket,
+    websocket: true,
+    longpoll: false
 
   # Serve at "/" the static files from "priv/static" directory.
   #
