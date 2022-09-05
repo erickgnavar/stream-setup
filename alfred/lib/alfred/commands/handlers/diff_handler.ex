@@ -9,7 +9,7 @@ defmodule Alfred.Commands.Handlers.DiffHandler do
   @show_time :timer.seconds(5)
   @overlay_topic AlfredWeb.OverlayLive.topic_name()
 
-  def execute do
+  def execute(_sender, _args) do
     diffs = Git.get_diffs()
     PubSub.broadcast(Alfred.PubSub, @overlay_topic, {:new_project_diffs, diffs})
 

@@ -9,7 +9,7 @@ defmodule Alfred.Commands.Handlers.SongHandler do
   @show_time :timer.seconds(5)
   @overlay_topic AlfredWeb.OverlayLive.topic_name()
 
-  def execute do
+  def execute(_sender, _args) do
     case Spotify.get_current_song() do
       nil ->
         {:ok, :noreply}

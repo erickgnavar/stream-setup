@@ -111,27 +111,28 @@ defmodule Alfred.Commands do
   @doc """
   Check if there is a command for the given trigger and execute it
   """
-  @spec execute(String.t()) :: {:ok, atom | String.t()} | {:error, String.t()}
-  def execute(trigger) do
+  @spec execute(String.t(), String.t(), [String.t()]) ::
+          {:ok, atom | String.t()} | {:error, String.t()}
+  def execute(trigger, sender, args) do
     trigger
     |> get_command_by_trigger()
-    |> handle_command()
+    |> handle_command(sender, args)
   end
 
-  @spec handle_command(Command.t() | nil) ::
+  @spec handle_command(Command.t() | nil, String.t(), [String.t()]) ::
           {:ok, String.t()} | {:ok, :noreply} | {:error, String.t()}
-  defp handle_command(nil) do
+  defp handle_command(nil, _sender, _args) do
     {:error, "Command not found"}
   end
 
-  defp handle_command(%{type: :text, result: result}) do
+  defp handle_command(%{type: :text, result: result}, _sender, _args) do
     {:ok, result}
   end
 
-  defp handle_command(%{type: :code, trigger: trigger, result: _result}) do
+  defp handle_command(%{type: :code, trigger: trigger, result: _result}, sender, args) do
     with module <- Module.concat(Alfred.Commands.Handlers, "#{Macro.camelize(trigger)}Handler"),
          true <- Code.ensure_loaded?(module) do
-      module.execute()
+      module.execute(sender, args)
     else
       false ->
         {:error, "handler module for #{trigger} not found"}

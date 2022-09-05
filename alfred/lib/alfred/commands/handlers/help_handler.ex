@@ -5,7 +5,7 @@ defmodule Alfred.Commands.Handlers.HelpHandler do
 
   alias Alfred.Commands
 
-  def execute do
+  def execute(_sender, _args) do
     text =
       Commands.list_commands()
       |> Enum.map(fn %{trigger: trigger} ->

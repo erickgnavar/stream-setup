@@ -10,6 +10,8 @@ defmodule Alfred.Chat.MessageHandler do
 
   alias Alfred.Commands
 
+  require Logger
+
   def start_link({client, channel}) do
     GenServer.start_link(__MODULE__, {client, channel}, name: __MODULE__)
   end
@@ -47,8 +49,22 @@ defmodule Alfred.Chat.MessageHandler do
     {:noreply, state}
   end
 
-  def handle_info({:received, "!" <> command, _sender, channel}, {client, channel} = state) do
-    case Commands.execute(command) do
+  @impl true
+  def handle_info({:received, "!" <> raw_command, sender, channel}, {client, channel} = state) do
+    {command, args} =
+      raw_command
+      |> String.trim()
+      |> String.split(" ")
+      |> case do
+        # command with not arguments
+        [command] -> {command, []}
+        # command with arguments
+        [command | rest] -> {command, rest}
+      end
+
+    Logger.info("Received command !#{command} with args: #{inspect(args)}")
+
+    case Commands.execute(command, sender.user, args) do
       {:ok, :noreply} ->
         nil
 

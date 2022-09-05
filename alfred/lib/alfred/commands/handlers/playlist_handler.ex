@@ -5,7 +5,7 @@ defmodule Alfred.Commands.Handlers.PlaylistHandler do
 
   alias Alfred.Workers.Spotify
 
-  def execute do
+  def execute(_sender, _args) do
     case Spotify.get_current_song() do
       %{playlist_url: url} when is_binary(url) -> {:ok, url}
       _ -> {:ok, :noreply}
