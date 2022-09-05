@@ -3,7 +3,7 @@ defmodule Alfred.Commands.Handlers.LineHandler do
   Highlight received line number in emacs editor
   """
 
-  def execute(_sender, [start]) do
+  def execute(sender, [start | rest]) do
     start =
       start
       |> Integer.parse()
@@ -12,11 +12,19 @@ defmodule Alfred.Commands.Handlers.LineHandler do
         _ -> nil
       end
 
+    text =
+      rest
+      |> Enum.join(" ")
+      |> case do
+        "" -> ""
+        comment -> "#{sender}: #{comment}"
+      end
+
     unless is_nil(start) do
       Phoenix.PubSub.broadcast(
         Alfred.PubSub,
         AlfredWeb.EmacsChannel.pubsub_topic(),
-        {:send_event, "line", %{start: start}}
+        {:send_event, "line", %{start: start, text: text}}
       )
     end
 

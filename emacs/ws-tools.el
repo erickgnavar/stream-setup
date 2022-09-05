@@ -5,6 +5,7 @@
 
 ;;; Code:
 (require 'websocket)
+(require 'pos-tip)
 
 (defvar ws--client nil)
 (defvar ws--ping-timer nil)
@@ -50,13 +51,15 @@
                                        (disable-theme 'modus-operandi)
                                        (load-theme 'dracula t))))
 
-(defun ws--highlight-line (start)
-  "Highlight a line in current buffer using START position."
+(defun ws--highlight-line (start text)
+  "Highlight a line in current buffer using START position and show TEXT as a tooltip."
   (goto-line start)
   (goto-char (line-beginning-position))
   (push-mark)
   (goto-char (line-end-position))
-  (activate-mark))
+  (activate-mark)
+  (if (and (stringp text) (not (string-equal text "")))
+      (pos-tip-show text '("white" . "red"))))
 
 (defun ws--on-message (_websocket frame)
   "Receive FRAME from websocket connection."
@@ -69,7 +72,7 @@
   (let ((event (gethash "event" message))
         (payload (gethash "payload" message)))
     (cond ((string-equal event "light-theme") (ws--enable-light-theme 5))
-          ((string-equal event "line") (ws--highlight-line (gethash "start" payload)))
+          ((string-equal event "line") (ws--highlight-line (gethash "start" payload) (gethash "text" payload)))
           ;; ignore replies, we only listen to specific events sent by server
           ((string-equal event "phx_reply") nil)
           (t (message "Received: %s" (json-encode message))))))
