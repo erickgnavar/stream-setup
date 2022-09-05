@@ -14,6 +14,7 @@ defmodule Alfred.Chat.MessageHandler do
     GenServer.start_link(__MODULE__, {client, channel}, name: __MODULE__)
   end
 
+  @impl true
   def init({client, _channel} = state) do
     ExIRC.Client.add_handler(client, self())
 
@@ -34,6 +35,7 @@ defmodule Alfred.Chat.MessageHandler do
     {:noreply, state}
   end
 
+  @impl true
   def handle_info(:logged_in, {client, channel} = state) do
     :ok = ExIRC.Client.join(client, channel)
     username = Application.get_env(:alfred, :twitch_irc)[:username]
@@ -60,6 +62,7 @@ defmodule Alfred.Chat.MessageHandler do
     {:noreply, state}
   end
 
+  @impl true
   def handle_info(_message, state) do
     {:noreply, state}
   end
