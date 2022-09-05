@@ -50,6 +50,14 @@
                                        (disable-theme 'modus-operandi)
                                        (load-theme 'dracula t))))
 
+(defun ws--highlight-line (start)
+  "Highlight a line in current buffer using START position."
+  (goto-line start)
+  (goto-char (line-beginning-position))
+  (push-mark)
+  (goto-char (line-end-position))
+  (activate-mark))
+
 (defun ws--on-message (_websocket frame)
   "Receive FRAME from websocket connection."
   (let* ((raw-string (websocket-frame-text frame))
@@ -58,8 +66,10 @@
 
 (defun ws--process-message (message)
   "Process MESSAGE and execute code depending of its value."
-  (let ((event (gethash "event" message)))
+  (let ((event (gethash "event" message))
+        (payload (gethash "payload" message)))
     (cond ((string-equal event "light-theme") (ws--enable-light-theme 5))
+          ((string-equal event "line") (ws--highlight-line (gethash "start" payload)))
           ;; ignore replies, we only listen to specific events sent by server
           ((string-equal event "phx_reply") nil)
           (t (message "Received: %s" (json-encode message))))))

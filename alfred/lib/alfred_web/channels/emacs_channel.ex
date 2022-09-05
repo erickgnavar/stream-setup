@@ -18,9 +18,8 @@ defmodule AlfredWeb.EmacsChannel do
   end
 
   @impl true
-  def handle_info(message, socket) when is_binary(message) do
-    # we just need to send the event, no payload is required
-    broadcast(socket, message, %{})
+  def handle_info({:send_event, event, payload}, socket) do
+    broadcast(socket, event, payload)
     {:noreply, socket}
   end
 
