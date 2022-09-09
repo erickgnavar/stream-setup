@@ -62,6 +62,12 @@
   (if (and (stringp text) (not (string-equal text "")))
       (pos-tip-show text '("white" . "red"))))
 
+(defun ws--change-font (font-name restart-after)
+  "Change font family using FONT-NAME and restart to default value after RESTART-AFTER seconds."
+  (set-frame-font (format "%s %d" font-name 26))
+  (run-with-timer restart-after nil #'(lambda ()
+                             (set-frame-font (format "%s %d" "Iosevka" 26)))))
+
 (defun ws--on-message (_websocket frame)
   "Receive FRAME from websocket connection."
   (let* ((raw-string (websocket-frame-text frame))
@@ -74,6 +80,7 @@
         (payload (gethash "payload" message)))
     (cond ((string-equal event "light-theme") (ws--enable-light-theme 10 (gethash "user" payload)))
           ((string-equal event "line") (ws--highlight-line (gethash "start" payload) (gethash "text" payload)))
+          ((string-equal event "minecraft") (ws--change-font "Monocraft" 10))
           ;; ignore replies, we only listen to specific events sent by server
           ((string-equal event "phx_reply") nil)
           (t (message "Received: %s" (json-encode message))))))
