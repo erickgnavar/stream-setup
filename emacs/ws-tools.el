@@ -43,10 +43,11 @@
     (user-error "Websocket is closed"))
   (websocket-send-text socket message))
 
-(defun ws--enable-light-theme (restart-after)
+(defun ws--enable-light-theme (restart-after user)
   "Change default theme to a light one and restore previous theme after RESTART-AFTER seconds."
   (disable-theme 'dracula)
   (load-theme 'modus-operandi t)
+  (message "%s used light theme" user)
   (run-with-timer restart-after nil #'(lambda ()
                                        (disable-theme 'modus-operandi)
                                        (load-theme 'dracula t))))
@@ -71,7 +72,7 @@
   "Process MESSAGE and execute code depending of its value."
   (let ((event (gethash "event" message))
         (payload (gethash "payload" message)))
-    (cond ((string-equal event "light-theme") (ws--enable-light-theme 5))
+    (cond ((string-equal event "light-theme") (ws--enable-light-theme 10 (gethash "user" payload)))
           ((string-equal event "line") (ws--highlight-line (gethash "start" payload) (gethash "text" payload)))
           ;; ignore replies, we only listen to specific events sent by server
           ((string-equal event "phx_reply") nil)
