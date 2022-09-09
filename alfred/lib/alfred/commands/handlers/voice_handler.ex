@@ -5,10 +5,10 @@ defmodule Alfred.Commands.Handlers.VoiceHandler do
 
   alias Alfred.Workers.Voice
 
-  def execute(_sender, args) do
-    args
-    |> Enum.join(" ")
-    |> Voice.queue_message()
+  def execute(sender, args) do
+    raw_message = Enum.join(args, " ")
+
+    Voice.queue_message("#{sender} dice #{raw_message}")
 
     {:ok, :noreply}
   end
