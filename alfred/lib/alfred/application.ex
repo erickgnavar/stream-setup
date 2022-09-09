@@ -25,7 +25,9 @@ defmodule Alfred.Application do
       # Fetch Spotify current song
       Alfred.Workers.Spotify,
       # Fetch data from Twitch
-      Alfred.Workers.Twitch
+      Alfred.Workers.Twitch,
+      # Voice worker
+      Alfred.Workers.Voice
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

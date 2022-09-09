@@ -3,18 +3,12 @@ defmodule Alfred.Commands.Handlers.VoiceHandler do
   Convert received message to voice using `say` command
   """
 
-  @allowed_chars '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ '
+  alias Alfred.Workers.Voice
 
   def execute(_sender, args) do
-    text =
-      args
-      |> Enum.join(" ")
-      |> String.to_charlist()
-      |> Enum.filter(&(&1 in @allowed_chars))
-      |> to_string()
-
-    # Paulina is a Spanish voice already configured in macOS
-    System.cmd("say", ["-v", "Paulina", text])
+    args
+    |> Enum.join(" ")
+    |> Voice.queue_message()
 
     {:ok, :noreply}
   end
