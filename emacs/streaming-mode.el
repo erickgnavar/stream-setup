@@ -54,6 +54,7 @@
   (if streaming-mode
       (progn
         (add-to-list 'compilation-finish-functions 'streaming-mode--notify-overlay)
+        (global-display-line-numbers-mode)
         (streaming-mode--big-font-mode))
     (progn
       (setq compilation-finish-functions (delq 'streaming-mode--notify-overlay compilation-finish-functions))
