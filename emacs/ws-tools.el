@@ -54,13 +54,14 @@
 
 (defun ws--highlight-line (start text)
   "Highlight a line in current buffer using START position and show TEXT as a tooltip."
-  (goto-line start)
-  (goto-char (line-beginning-position))
-  (push-mark)
-  (goto-char (line-end-position))
-  (activate-mark)
-  (if (and (stringp text) (not (string-equal text "")))
-      (pos-tip-show text '("white" . "red"))))
+  (when (and (> start 0) (<= start (count-lines (point-min) (point-max))))
+    (goto-line start)
+    (goto-char (line-beginning-position))
+    (push-mark)
+    (goto-char (line-end-position))
+    (activate-mark)
+    (if (and (stringp text) (not (string-equal text "")))
+        (pos-tip-show text '("white" . "red")))))
 
 (defun ws--change-font (font-name restart-after)
   "Change font family using FONT-NAME and restart to default value after RESTART-AFTER seconds."
