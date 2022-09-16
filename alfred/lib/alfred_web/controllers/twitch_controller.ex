@@ -46,5 +46,30 @@ defmodule AlfredWeb.TwitchController do
     {:ok, ""}
   end
 
+  defp handle_type("channel.channel_points_custom_reward_redemption.add", %{
+         "user_name" => username,
+         "user_input" => raw_message,
+         "reward" => %{
+           "title" => reward_name
+         }
+       }) do
+    case reward_name do
+      "voice" ->
+        Alfred.Workers.Voice.queue_message("#{username} dice #{raw_message}")
+
+      "light theme" ->
+        Phoenix.PubSub.broadcast(
+          Alfred.PubSub,
+          AlfredWeb.EmacsChannel.pubsub_topic(),
+          {:send_event, "light-theme", %{user: username}}
+        )
+
+      _ ->
+        nil
+    end
+
+    {:ok, ""}
+  end
+
   defp handle_type(_type, _event), do: {:error, "invalid type"}
 end
