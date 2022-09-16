@@ -65,27 +65,7 @@ defmodule AlfredWeb.TwitchController do
            "title" => reward_name
          }
        }) do
-    case reward_name do
-      "voice" ->
-        Alfred.Workers.Voice.queue_message("#{username} dice #{raw_message}")
-
-      "light theme" ->
-        Phoenix.PubSub.broadcast(
-          Alfred.PubSub,
-          AlfredWeb.EmacsChannel.pubsub_topic(),
-          {:send_event, "light-theme", %{user: username}}
-        )
-
-      "burn code" ->
-        Phoenix.PubSub.broadcast(
-          Alfred.PubSub,
-          AlfredWeb.EmacsChannel.pubsub_topic(),
-          {:send_event, "burn", %{}}
-        )
-
-      _ ->
-        nil
-    end
+    Alfred.Twitch.RewardsHandler.handle(reward_name, username, raw_message)
 
     {:ok, ""}
   end
