@@ -82,6 +82,8 @@
     (cond ((string-equal event "light-theme") (ws--enable-light-theme 10 (gethash "user" payload)))
           ((string-equal event "line") (ws--highlight-line (gethash "start" payload) (gethash "text" payload)))
           ((string-equal event "minecraft") (ws--change-font "Monocraft" 10))
+          ;TODO: add a loader for burn.el package
+          ((string-equal event "burn") (burn-code))
           ;; ignore replies, we only listen to specific events sent by server
           ((string-equal event "phx_reply") nil)
           (t (message "Received: %s" (json-encode message))))))

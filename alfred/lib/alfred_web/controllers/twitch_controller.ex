@@ -64,6 +64,9 @@ defmodule AlfredWeb.TwitchController do
           {:send_event, "light-theme", %{user: username}}
         )
 
+      "burn code" ->
+        Phoenix.PubSub.broadcast(Alfred.PubSub, "emacs", {:send_event, "burn", %{}})
+
       _ ->
         nil
     end
