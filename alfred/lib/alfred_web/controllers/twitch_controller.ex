@@ -40,9 +40,21 @@ defmodule AlfredWeb.TwitchController do
 
   defp handle_event(_event, _params), do: {:error, "Event not found"}
 
-  defp handle_type("channel.follow", %{"user_name" => _username}) do
-    # TODO: show overlay notification
-    # TODO: say hi in chat
+  defp handle_type("channel.follow", %{"user_name" => username}) do
+    Alfred.Chat.MessageHandler.post_message("¡Bienvenido #{username}!")
+
+    case Alfred.Core.get_config_param("notifications.follow") do
+      nil ->
+        nil
+
+      %{value: url} ->
+        Phoenix.PubSub.broadcast(
+          Alfred.PubSub,
+          AlfredWeb.OverlayLive.topic_name(),
+          {:new_notification, %{title: "new follow: #{username}", image_url: url}}
+        )
+    end
+
     {:ok, ""}
   end
 
