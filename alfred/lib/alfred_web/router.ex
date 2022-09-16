@@ -60,6 +60,10 @@ defmodule AlfredWeb.Router do
     get "/authenticate", SpotifyController, :authenticate
   end
 
+  scope "/webhooks", AlfredWeb do
+    post "/twitch", TwitchController, :webhook
+  end
+
   # Enables LiveDashboard only for development
   #
   # If you want to use the LiveDashboard in production, you should put
