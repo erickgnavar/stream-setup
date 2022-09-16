@@ -1,3 +1,11 @@
+<%= unless is_nil(@notification) do %>
+  <div class="notification-alert">
+    <img src={@notification.image_url} class="notification-image" />
+    <div class="notification-title">
+      <%= @notification.title %>
+    </div>
+  </div>
+<% end %>
 <header class="topbar">
   <div class="topbar-inner">
     <span>

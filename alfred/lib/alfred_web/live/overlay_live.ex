@@ -3,6 +3,7 @@ defmodule AlfredWeb.OverlayLive do
 
   @topic "overlay"
   @image_showing_time :timer.seconds(3)
+  @notification_timer :timer.seconds(5)
 
   alias Phoenix.PubSub
 
@@ -15,6 +16,7 @@ defmodule AlfredWeb.OverlayLive do
      |> assign(:project_diffs, [])
      |> assign(:playing_song, nil)
      |> assign(:last_follow, nil)
+     |> assign(:notification, nil)
      |> assign(:image_url, nil)}
   end
 
@@ -31,6 +33,15 @@ defmodule AlfredWeb.OverlayLive do
   def handle_info({:change_image, image_url}, socket) do
     Process.send_after(self(), :hide_image, @image_showing_time)
     {:noreply, assign(socket, :image_url, image_url)}
+  end
+
+  def handle_info({:new_notification, notification}, socket) do
+    Process.send_after(self(), :hide_notification, @notification_timer)
+    {:noreply, assign(socket, :notification, notification)}
+  end
+
+  def handle_info(:hide_notification, socket) do
+    {:noreply, assign(socket, :notification, nil)}
   end
 
   def handle_info({:new_project_diffs, diffs}, socket) do
