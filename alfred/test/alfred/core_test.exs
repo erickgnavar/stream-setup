@@ -20,6 +20,15 @@ defmodule Alfred.CoreTest do
       assert Core.get_config_param!(config_param.id) == config_param
     end
 
+    test "get_config_value!/1 returns the config value with given key" do
+      config_param = config_param_fixture()
+      assert Core.get_config_value!(config_param.key) == config_param.value
+    end
+
+    test "get_config_value!/1 raises error when key doesn't exist" do
+      assert_raise RuntimeError, fn -> Core.get_config_value!("not found key") end
+    end
+
     test "create_config_param/1 with valid data creates a config_param" do
       valid_attrs = %{key: "some key", value: "some value"}
 

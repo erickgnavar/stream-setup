@@ -26,11 +26,7 @@ defmodule Alfred.Workers.Git do
   @impl true
   def handle_continue(:setup_state, state) do
     # in case this is pre configured we use the value from database
-    project_dir =
-      case Core.get_config_param("git_project_dir") do
-        nil -> ""
-        %{value: value} -> value
-      end
+    project_dir = Core.get_config_value!("git_project_dir")
 
     # start a loop to have diffs list always updated
     Process.send_after(self(), :get_diffs, @update_interval)

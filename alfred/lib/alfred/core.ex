@@ -42,6 +42,16 @@ defmodule Alfred.Core do
   """
   def get_config_param!(id), do: Repo.get!(ConfigParam, id)
 
+  @doc """
+  Return config value if exist, otherwise raise an runtime error
+  """
+  def get_config_value!(key) when is_binary(key) do
+    case get_config_param(key) do
+      nil -> raise "#{key} config value not found"
+      %{value: value} -> value
+    end
+  end
+
   def get_config_param(key) do
     ConfigParam
     |> where(key: ^key)

@@ -26,7 +26,11 @@ defmodule Alfred.Workers.Spotify do
   def handle_continue(:setup_state, state) do
     Process.send_after(self(), :fetch_current_song, @update_interval)
 
-    new_state = Map.merge(state, %{playing_song: nil, access_token: read_access_token()})
+    new_state =
+      Map.merge(state, %{
+        playing_song: nil,
+        access_token: Core.get_config_value!("secret.spotify.access_token")
+      })
 
     {:noreply, new_state}
   end
@@ -115,15 +119,6 @@ defmodule Alfred.Workers.Spotify do
       error ->
         Logger.error("Spotify request error: #{inspect(error)}")
         {:error, "unexpected error"}
-    end
-  end
-
-  @spec read_access_token :: String.t() | nil
-  defp read_access_token do
-    case Core.get_config_param("secret.spotify.access_token") do
-      nil -> nil
-      %{value: ""} -> nil
-      %{value: access_token} -> access_token
     end
   end
 end

@@ -17,18 +17,27 @@ defmodule Alfred.Application do
       # Start the Endpoint (http/https)
       AlfredWeb.Endpoint,
       # twitch irc chat supervisor
-      Alfred.Chat,
+      Alfred.Chat
       # Start a worker by calling: Alfred.Worker.start_link(arg)
       # {Alfred.Worker, arg}
-      # git project watcher to compute diffs
-      Alfred.Workers.Git,
-      # Fetch Spotify current song
-      Alfred.Workers.Spotify,
-      # Fetch data from Twitch
-      Alfred.Workers.Twitch,
-      # Voice worker
-      Alfred.Workers.Voice
     ]
+
+    children =
+      if System.get_env("MIX_ENV") == "test" do
+        children
+      else
+        children ++
+          [
+            # git project watcher to compute diffs
+            Alfred.Workers.Git,
+            # Fetch Spotify current song
+            Alfred.Workers.Spotify,
+            # Fetch data from Twitch
+            Alfred.Workers.Twitch,
+            # Voice worker
+            Alfred.Workers.Voice
+          ]
+      end
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

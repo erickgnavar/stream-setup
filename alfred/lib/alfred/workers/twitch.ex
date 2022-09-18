@@ -111,19 +111,8 @@ defmodule Alfred.Workers.Twitch do
 
   @spec read_credentials :: String.t() | nil
   defp read_credentials do
-    access_token =
-      case Core.get_config_param("secret.twitch.access_token") do
-        nil -> nil
-        %{value: ""} -> nil
-        %{value: access_token} -> access_token
-      end
-
-    user_id =
-      case Core.get_config_param("twitch.user_id") do
-        nil -> nil
-        %{value: ""} -> nil
-        %{value: user_id} -> user_id
-      end
+    access_token = Core.get_config_value!("secret.twitch.access_token")
+    user_id = Core.get_config_value!("twitch.user_id")
 
     # these values aren't booleans so we need to use && instead of and
     if access_token && user_id do
