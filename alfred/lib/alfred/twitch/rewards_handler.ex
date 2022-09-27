@@ -39,6 +39,31 @@ defmodule Alfred.Twitch.RewardsHandler do
     )
   end
 
+  # these are valid games already loaded in emacs
+  @valid_emacs_games ["snake", "tetris", "bubbles"]
+
+  def handle("game", username, _text) do
+    game = Enum.random(@valid_emacs_games)
+
+    Phoenix.PubSub.broadcast(
+      Alfred.PubSub,
+      AlfredWeb.EmacsChannel.pubsub_topic(),
+      {:send_event, "game", %{"game" => game}}
+    )
+
+    case Alfred.Core.get_config_param("rewards.game") do
+      nil ->
+        nil
+
+      %{value: url} ->
+        Phoenix.PubSub.broadcast(
+          Alfred.PubSub,
+          AlfredWeb.OverlayLive.topic_name(),
+          {:new_notification, %{title: "#{username} canjeó #{game}", image_url: url}}
+        )
+    end
+  end
+
   def handle(reward_name, _username, _text),
     do: {:error, "no handler found for #{reward_name}"}
 end
