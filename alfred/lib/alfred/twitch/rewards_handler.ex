@@ -8,6 +8,18 @@ defmodule Alfred.Twitch.RewardsHandler do
   """
   @spec handle(String.t(), String.t(), String.t()) :: any
   def handle("voice", username, text) do
+    case Alfred.Core.get_config_param("rewards.voice") do
+      nil ->
+        nil
+
+      %{value: url} ->
+        Phoenix.PubSub.broadcast(
+          Alfred.PubSub,
+          AlfredWeb.OverlayLive.topic_name(),
+          {:new_notification, %{title: "#{username} dice", image_url: url}}
+        )
+    end
+
     Alfred.Workers.Voice.queue_message("#{username} dice #{text}")
   end
 
