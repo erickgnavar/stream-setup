@@ -44,7 +44,8 @@
   (websocket-send-text socket message))
 
 (defun ws--enable-light-theme (restart-after user)
-  "Change default theme to a light one and restore previous theme after RESTART-AFTER seconds."
+  "Change theme to a light one and restore current theme after RESTART-AFTER secs.
+Also show USER who activate this feature."
   (disable-theme 'dracula)
   (load-theme 'modus-operandi t)
   (message "%s used light theme" user)
