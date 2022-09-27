@@ -20,9 +20,6 @@ defmodule AlfredWeb.OverlayLive do
      |> assign(:image_url, nil)}
   end
 
-  @spec topic_name :: String.t()
-  def topic_name, do: @topic
-
   @doc """
   Return overlay topic name, all updates should be send to this topic
   """
