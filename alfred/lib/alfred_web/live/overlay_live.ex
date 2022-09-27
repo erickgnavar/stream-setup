@@ -26,6 +26,13 @@ defmodule AlfredWeb.OverlayLive do
   @spec topic_name :: String.t()
   def topic_name, do: @topic
 
+  @doc """
+  Render received markdown text to HTML
+  """
+  @spec render_markdown(String.t()) :: String.t()
+  # TODO: check how to remove root p tag
+  def render_markdown(text), do: Earmark.as_html!(text, [])
+
   def handle_info(:hide_image, socket) do
     {:noreply, assign(socket, :image_url, nil)}
   end

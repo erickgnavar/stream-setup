@@ -51,7 +51,7 @@ defmodule AlfredWeb.TwitchController do
         Phoenix.PubSub.broadcast(
           Alfred.PubSub,
           AlfredWeb.OverlayLive.topic_name(),
-          {:new_notification, %{title: "new follow: #{username}", image_url: url}}
+          {:new_notification, %{title: "New follow: **#{username}**", image_url: url}}
         )
     end
 

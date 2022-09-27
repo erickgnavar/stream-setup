@@ -2,7 +2,7 @@
   <div class="notification-alert">
     <img src={@notification.image_url} class="notification-image" />
     <div class="notification-title">
-      <%= @notification.title %>
+      <%= raw render_markdown(@notification.title) %>
     </div>
   </div>
 <% end %>

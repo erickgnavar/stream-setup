@@ -16,7 +16,7 @@ defmodule Alfred.Twitch.RewardsHandler do
         Phoenix.PubSub.broadcast(
           Alfred.PubSub,
           AlfredWeb.OverlayLive.topic_name(),
-          {:new_notification, %{title: "#{username} dice", image_url: url}}
+          {:new_notification, %{title: "**#{username}** dice", image_url: url}}
         )
     end
 
@@ -38,7 +38,7 @@ defmodule Alfred.Twitch.RewardsHandler do
         Phoenix.PubSub.broadcast(
           Alfred.PubSub,
           AlfredWeb.OverlayLive.topic_name(),
-          {:new_notification, %{title: "#{username} canjeó light theme", image_url: url}}
+          {:new_notification, %{title: "**#{username}** canjeó **light theme**", image_url: url}}
         )
     end
   end
@@ -71,7 +71,7 @@ defmodule Alfred.Twitch.RewardsHandler do
         Phoenix.PubSub.broadcast(
           Alfred.PubSub,
           AlfredWeb.OverlayLive.topic_name(),
-          {:new_notification, %{title: "#{username} canjeó #{game}", image_url: url}}
+          {:new_notification, %{title: "**#{username}** canjeó **#{game}**", image_url: url}}
         )
     end
   end
