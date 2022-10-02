@@ -62,7 +62,17 @@ Also show USER who activate this feature."
     (goto-char (line-end-position))
     (activate-mark)
     (if (and (stringp text) (not (string-equal text "")))
-        (pos-tip-show text '("white" . "red")))))
+        (progn
+          ;; enable bell sound just at this scope
+          (let ((ring-bell-function nil))
+            (ding))
+          ;; show visual bell just for this scope
+          (let ((ring-bell-function nil)
+                (visible-bell t))
+            (ding))
+          ;; show tooltip for 10 seconds
+          ;; set nil and nil to use default position and current window
+          (pos-tip-show text '("white" . "red") nil nil 10)))))
 
 (defun ws--change-font (font-name restart-after)
   "Change font family using FONT-NAME and restart to default value after RESTART-AFTER seconds."
