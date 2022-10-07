@@ -4,6 +4,11 @@
     <div class="notification-title">
       <%= raw render_markdown(@notification.title) %>
     </div>
+    <%= if @notification[:sound] do %>
+      <audio controls autoplay>
+        <source src={@notification.sound} type="audio/ogg">
+      </audio>
+    <% end %>
   </div>
 <% end %>
 <header class="topbar">

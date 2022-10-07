@@ -51,6 +51,20 @@ defmodule Alfred.Twitch.RewardsHandler do
     )
   end
 
+  def handle("wazap", _username, _text) do
+    mp3 = Alfred.Core.get_config_param("rewards.wazap_mp3")
+    gif = Alfred.Core.get_config_param("rewards.wazap_gif")
+
+    if mp3 && gif do
+      Phoenix.PubSub.broadcast(
+        Alfred.PubSub,
+        AlfredWeb.OverlayLive.topic_name(),
+        {:new_notification,
+         %{title: "Wazaaaaaaaaaaaaaap", image_url: gif.value, sound: mp3.value}}
+      )
+    end
+  end
+
   # these are valid games already loaded in emacs
   @valid_emacs_games ["snake", "tetris", "bubbles"]
 
