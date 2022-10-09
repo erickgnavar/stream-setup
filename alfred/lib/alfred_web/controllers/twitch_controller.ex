@@ -44,17 +44,20 @@ defmodule AlfredWeb.TwitchController do
          "from_broadcaster_user_login" => username,
          "viewers" => viewers
        }) do
-    case Alfred.Core.get_config_param("notifications.raid") do
-      nil ->
-        nil
+    sound = Alfred.Core.get_config_param("notifications.sound")
+    image = Alfred.Core.get_config_param("notifications.raid")
 
-      %{value: url} ->
-        Phoenix.PubSub.broadcast(
-          Alfred.PubSub,
-          AlfredWeb.OverlayLive.topic_name(),
-          {:new_notification,
-           %{title: "Raid from **#{username}** with **#{viewers}** viewers", image_url: url}}
-        )
+    if sound && image do
+      Phoenix.PubSub.broadcast(
+        Alfred.PubSub,
+        AlfredWeb.OverlayLive.topic_name(),
+        {:new_notification,
+         %{
+           title: "Raid from **#{username}** with **#{viewers}** viewers",
+           image_url: image.value,
+           sound: sound.value
+         }}
+      )
     end
 
     {:ok, ""}
@@ -63,16 +66,16 @@ defmodule AlfredWeb.TwitchController do
   defp handle_type("channel.follow", %{"user_name" => username}) do
     Alfred.Chat.MessageHandler.post_message("¡Bienvenido #{username}!")
 
-    case Alfred.Core.get_config_param("notifications.follow") do
-      nil ->
-        nil
+    sound = Alfred.Core.get_config_param("notifications.sound")
+    image = Alfred.Core.get_config_param("notifications.follow")
 
-      %{value: url} ->
-        Phoenix.PubSub.broadcast(
-          Alfred.PubSub,
-          AlfredWeb.OverlayLive.topic_name(),
-          {:new_notification, %{title: "New follow: **#{username}**", image_url: url}}
-        )
+    if sound && image do
+      Phoenix.PubSub.broadcast(
+        Alfred.PubSub,
+        AlfredWeb.OverlayLive.topic_name(),
+        {:new_notification,
+         %{title: "New follow: **#{username}**", image_url: image.value, sound: sound.value}}
+      )
     end
 
     {:ok, ""}
