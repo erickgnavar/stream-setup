@@ -53,7 +53,7 @@ defmodule AlfredWeb.TwitchController do
           Alfred.PubSub,
           AlfredWeb.OverlayLive.topic_name(),
           {:new_notification,
-           %{title: "Raid from **#{username}** with #{viewers} viewers", image_url: url}}
+           %{title: "Raid from **#{username}** with **#{viewers}** viewers", image_url: url}}
         )
     end
 
