@@ -77,16 +77,16 @@ defmodule Alfred.Twitch.RewardsHandler do
       {:send_event, "game", %{"game" => game}}
     )
 
-    case Alfred.Core.get_config_param("rewards.game") do
-      nil ->
-        nil
+    mp3 = Alfred.Core.get_config_param("rewards.game_mp3")
+    gif = Alfred.Core.get_config_param("rewards.game_gif")
 
-      %{value: url} ->
-        Phoenix.PubSub.broadcast(
-          Alfred.PubSub,
-          AlfredWeb.OverlayLive.topic_name(),
-          {:new_notification, %{title: "**#{username}** canjeó **#{game}**", image_url: url}}
-        )
+    if mp3 && gif do
+      Phoenix.PubSub.broadcast(
+        Alfred.PubSub,
+        AlfredWeb.OverlayLive.topic_name(),
+        {:new_notification,
+         %{title: "**#{username}** canjeó **#{game}**", image_url: gif.value, sound: mp3.value}}
+      )
     end
   end
 
