@@ -40,6 +40,26 @@ defmodule AlfredWeb.TwitchController do
 
   defp handle_event(_event, _params), do: {:error, "Event not found"}
 
+  defp handle_type("channel.raid", %{
+         "from_broadcaster_user_login" => username,
+         "viewers" => viewers
+       }) do
+    case Alfred.Core.get_config_param("notifications.raid") do
+      nil ->
+        nil
+
+      %{value: url} ->
+        Phoenix.PubSub.broadcast(
+          Alfred.PubSub,
+          AlfredWeb.OverlayLive.topic_name(),
+          {:new_notification,
+           %{title: "Raid from **#{username}** with #{viewers} viewers", image_url: url}}
+        )
+    end
+
+    {:ok, ""}
+  end
+
   defp handle_type("channel.follow", %{"user_name" => username}) do
     Alfred.Chat.MessageHandler.post_message("¡Bienvenido #{username}!")
 
