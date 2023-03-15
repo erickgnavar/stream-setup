@@ -4,11 +4,12 @@ on:
   push:
     paths:
       - "alfred/**"
+      - ".github/workflows/elixir-ci.yml"
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    container: elixir:1.13-alpine
+    container: elixir:1.13
     defaults:
       run:
         working-directory: alfred
@@ -18,7 +19,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          apk add --update bash openssl git build-base
+          apt update
+          apt install openssl git build-essential -y
           mix local.hex --force && mix local.rebar --force
           mix deps.get
 
