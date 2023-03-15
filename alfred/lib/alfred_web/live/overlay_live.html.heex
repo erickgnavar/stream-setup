@@ -52,6 +52,14 @@
   </table>
 </div>
 
+<%= if @emoji do %>
+  <div class="sentiment-analysis">
+    <div class="emoji">
+      <%= @emoji %>
+    </div>
+  </div>
+<% end %>
+
 <%= unless is_nil(@playing_song) do %>
 <div class="playing-song-container">
   <img src={@playing_song.album.image_url} />

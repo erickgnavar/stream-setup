@@ -239,6 +239,16 @@
   text-shadow: 0 0 3px #FF0000, 0 0 5px #0000FF;
 }
 
+.sentiment-analysis {
+  position: absolute;
+  bottom: 10px;
+  left: 20px;
+}
+
+.sentiment-analysis .emoji {
+  font-size: 6rem;
+}
+
 @keyframes show-notification {
   from {
     top: -300px;

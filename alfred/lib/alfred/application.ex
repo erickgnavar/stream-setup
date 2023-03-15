@@ -17,9 +17,11 @@ defmodule Alfred.Application do
       # Start the Endpoint (http/https)
       AlfredWeb.Endpoint,
       # twitch irc chat supervisor
-      Alfred.Chat
+      Alfred.Chat,
       # Start a worker by calling: Alfred.Worker.start_link(arg)
       # {Alfred.Worker, arg}
+      # define process that will have all the required models loaded into memory
+      {Nx.Serving, serving: serving(), name: Alfred.Serving}
     ]
 
     children =
@@ -43,6 +45,18 @@ defmodule Alfred.Application do
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Alfred.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  defp serving do
+    {:ok, bertweet} =
+      Bumblebee.load_model({:hf, "finiteautomata/bertweet-base-sentiment-analysis"})
+
+    {:ok, tokenizer} = Bumblebee.load_tokenizer({:hf, "vinai/bertweet-base"})
+
+    Bumblebee.Text.text_classification(bertweet, tokenizer,
+      compile: [batch_size: 1, sequence_length: 100],
+      defn_options: [compiler: EXLA]
+    )
   end
 
   # Tell Phoenix to update the endpoint configuration

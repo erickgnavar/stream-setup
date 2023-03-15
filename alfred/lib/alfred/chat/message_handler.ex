@@ -79,6 +79,17 @@ defmodule Alfred.Chat.MessageHandler do
   end
 
   @impl true
+  def handle_info({:received, text, _sender, _channel}, state) do
+    Phoenix.PubSub.broadcast(
+      Alfred.PubSub,
+      AlfredWeb.OverlayLive.sentiment_analysis_topic_name(),
+      {:new_message, text}
+    )
+
+    {:noreply, state}
+  end
+
+  @impl true
   def handle_info(_message, state) do
     {:noreply, state}
   end

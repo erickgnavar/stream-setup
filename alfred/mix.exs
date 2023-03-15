@@ -52,7 +52,9 @@ defmodule Alfred.MixProject do
       {:spotify_ex, "~> 2.3"},
       {:ueberauth_twitch, "~> 0.1.0"},
       {:bcrypt_elixir, "~> 3.0"},
-      {:earmark, "~> 1.4"}
+      {:earmark, "~> 1.4"},
+      {:exla, "~> 0.4.2"},
+      {:bumblebee, "~> 0.1.2"}
     ]
   end
 
