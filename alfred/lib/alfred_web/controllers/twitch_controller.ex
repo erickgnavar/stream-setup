@@ -81,6 +81,24 @@ defmodule AlfredWeb.TwitchController do
     {:ok, ""}
   end
 
+  defp handle_type("channel.subscribe", %{"user_name" => username}) do
+    Alfred.Chat.MessageHandler.post_message("¡Gracias por el sub #{username}!")
+
+    sound = Alfred.Core.get_config_param("notifications.sound")
+    image = Alfred.Core.get_config_param("notifications.subscribe")
+
+    if sound && image do
+      Phoenix.PubSub.broadcast(
+        Alfred.PubSub,
+        AlfredWeb.OverlayLive.topic_name(),
+        {:new_notification,
+         %{title: "New subscribe: **#{username}**", image_url: image.value, sound: sound.value}}
+      )
+    end
+
+    {:ok, ""}
+  end
+
   defp handle_type("channel.channel_points_custom_reward_redemption.add", %{
          "user_name" => username,
          "user_input" => raw_message,
