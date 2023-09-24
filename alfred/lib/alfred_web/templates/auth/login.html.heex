@@ -1,5 +1,16 @@
-<form action={Routes.auth_path(@conn, :new_session)} method="POST">
-  <%= csrf_input_tag(Routes.auth_path(@conn, :new_session)) %>
-  <input name="password" type="password" autofocus />
-  <button type="submit">Login</button>
-</form>
+<link href="https://cdn.jsdelivr.net/npm/daisyui@3.7.7/dist/full.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div class="container mx-auto mt-3">
+  <form action={Routes.auth_path(@conn, :new_session)} method="POST">
+    <%= csrf_input_tag(Routes.auth_path(@conn, :new_session)) %>
+    <div class="form-control w-full max-w-xs">
+      <label class="label">
+        <span class="label-text">Password</span>
+      </label>
+      <input name="password" type="password" placeholder="Type here" class="input input-bordered input-xm w-full max-w-xs" />
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-sm my-2">Login</button>
+  </form>
+</div>

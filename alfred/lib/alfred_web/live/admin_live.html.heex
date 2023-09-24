@@ -1,71 +1,88 @@
-<header>
-  Admin
-  <%= link "Log out", to: Routes.auth_path(@socket, :logout), method: :delete %>
+<link href="https://cdn.jsdelivr.net/npm/daisyui@3.7.7/dist/full.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.tailwindcss.com"></script>
+
+<header class="mx-auto mt-3">
+  <div class="navbar bg-base-100">
+    <div class="flex-1">
+      <a class="btn btn-ghost normal-case btn-sm text-xl">Admin</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        <li>
+          <%= link "Log out", to: Routes.auth_path(@socket, :logout), method: :delete, class: "btn btn-ghost btn-sm" %>
+        </li>
+      </ul>
+    </div>
+  </div>
 </header>
-<div class="flags">
-  <h3>Flags</h3>
 
-  <table>
-    <thead>
-      <tr>
-        <td>Flag</td>
-        <td>Status</td>
-        <td>Options</td>
-      </tr>
-    </thead>
-    <tbody>
-      <%= for flag <- @flags do %>
-        <tr>
-          <td>
-            <%= flag.key %>
-          </td>
-          <td>
-            <%= if flag.value == "true" do %>
-              <span class="flag-on">ON</span>
-            <% else %>
-              <span class="flag-off">OFF</span>
-            <% end %>
-          </td>
-          <td>
-            <button type="button" phx-click="toggle-flag" phx-value-key={flag.key}>Toggle</button>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
+<div class="container mx-auto mt-3">
+  <div class="flex gap-3">
+    <div class="w-1/2">
+      <h3 class="text-center text-2xl">Flags</h3>
 
-<div>
-  <h3>Services</h3>
+      <table class="table table-zebra mt-2">
+        <thead>
+          <tr>
+            <td>Flag</td>
+            <td>Status</td>
+            <td>Options</td>
+          </tr>
+        </thead>
+        <tbody>
+          <%= for flag <- @flags do %>
+            <tr>
+              <td>
+                <%= flag.key %>
+              </td>
+              <td class="text-xl">
+                <%= if flag.value == "true" do %>
+                  <span class="flag-on">ON</span>
+                <% else %>
+                  <span class="flag-off">OFF</span>
+                <% end %>
+              </td>
+              <td>
+                <button type="button" class="btn btn-neutral btn-sm" phx-click="toggle-flag" phx-value-key={flag.key}>Toggle</button>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div class="w-1/2">
+      <h3 class="text-center text-2xl">Services</h3>
 
-  <table>
-    <thead>
-      <tr>
-        <td>Service</td>
-        <td>Options</td>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <!-- color copied from spotify website -->
-          <i class="fa-brands fa-spotify" style="color: #44ce75"></i>
-          Spotify
-        </td>
-        <td>
-          <%= link "Login", to: Routes.spotify_path(@socket, :authorize) %>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <!-- color copied from twitch website -->
-          <i class="fa-brands fa-twitch" style="color: #5815BA"></i>
-          Twitch
-        </td>
-        <td>
-          <%= link "Login", to: Routes.auth_path(@socket, :request, "twitch") %>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+      <table class="table table-zebra mt-2">
+        <thead>
+          <tr>
+            <td>Service</td>
+            <td>Options</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <!-- color copied from spotify website -->
+              <i class="fa-brands fa-spotify" style="color: #44ce75"></i>
+              Spotify
+            </td>
+            <td>
+              <%= link "Login", to: Routes.spotify_path(@socket, :authorize), class: "btn btn-neutral btn-sm" %>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <!-- color copied from twitch website -->
+              <i class="fa-brands fa-twitch" style="color: #5815BA"></i>
+              Twitch
+            </td>
+            <td>
+              <%= link "Login", to: Routes.auth_path(@socket, :request, "twitch"), class: "btn btn-neutral btn-sm" %>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
