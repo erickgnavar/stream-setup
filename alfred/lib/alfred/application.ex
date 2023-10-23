@@ -48,12 +48,12 @@ defmodule Alfred.Application do
   end
 
   defp serving do
-    {:ok, bertweet} =
-      Bumblebee.load_model({:hf, "finiteautomata/bertweet-base-sentiment-analysis"})
+    {:ok, model} = Bumblebee.load_model({:hf, "pysentimiento/robertuito-sentiment-analysis"})
 
-    {:ok, tokenizer} = Bumblebee.load_tokenizer({:hf, "vinai/bertweet-base"})
+    {:ok, tokenizer} =
+      Bumblebee.load_tokenizer({:hf, "pysentimiento/robertuito-sentiment-analysis"})
 
-    Bumblebee.Text.text_classification(bertweet, tokenizer,
+    Bumblebee.Text.text_classification(model, tokenizer,
       compile: [batch_size: 1, sequence_length: 100],
       defn_options: [compiler: EXLA]
     )
