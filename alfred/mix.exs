@@ -53,8 +53,8 @@ defmodule Alfred.MixProject do
       {:ueberauth_twitch, "~> 0.1.0"},
       {:bcrypt_elixir, "~> 3.0"},
       {:earmark, "~> 1.4"},
-      {:exla, "~> 0.4.2"},
-      {:bumblebee, "~> 0.1.2"}
+      {:exla, ">= 0.0.0"},
+      {:bumblebee, "~> 0.4.2"}
     ]
   end
 
