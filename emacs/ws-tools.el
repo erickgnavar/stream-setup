@@ -5,7 +5,7 @@
 
 ;;; Code:
 (require 'websocket)
-(require 'pos-tip)
+(require 'posframe)
 
 (defvar ws--client nil)
 (defvar ws--ping-timer nil)
@@ -72,7 +72,14 @@ Also show USER who activate this feature."
             (ding))
           ;; show tooltip for 10 seconds
           ;; set nil and nil to use default position and current window
-          (pos-tip-show text '("white" . "red") nil nil 10)))))
+          (posframe-show "*line-toolip*" :string text
+                         :border-width 3
+                         :left-fringe 10
+                         :right-fringe 10
+                         :border-color "red"
+                         :position (point))
+          (run-with-timer 5 nil #'(lambda ()
+                                    (posframe-delete "*line-toolip*")))))))
 
 (defun ws--change-font (font-name restart-after)
   "Change font family using FONT-NAME and restart to default value after RESTART-AFTER seconds."
