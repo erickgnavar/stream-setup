@@ -33,7 +33,7 @@ async def send_message(type, data):
     # TODO: reuse connection to avoid open a new one on every message
     async with websockets.connect("ws://localhost:4455") as websocket:
         # wait for hello message, it should be a op code 0
-        message = await websocket.recv()
+        _message = await websocket.recv()
 
         response = {"op": 1, "d": {"rpcVersion": 1}}
         # send op code 1 message to confirm we have a identified connection
