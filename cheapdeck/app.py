@@ -56,7 +56,9 @@ async def toggle_microphone(mute: bool):
 
 # these are the identifiers for numeric keyboard
 # TODO: make this configurable
-device = usb.core.find(idVendor=0x13BA, idProduct=0x0001)
+device = usb.core.find(idVendor=0x8089, idProduct=0x0004)
+
+logger.info(f"Connection to device {device}")
 
 
 if not device:
@@ -65,28 +67,26 @@ if not device:
 
 interface = device[0].interfaces()[0].bInterfaceNumber
 
-device.reset()
-
 endpoint = device[0].interfaces()[0].endpoints()[0]
 
 keypad = {
-    "0": array("B", [0, 0, 83, 0, 0, 0, 0, 0]),
-    "/": array("B", [0, 0, 84, 0, 0, 0, 0, 0]),
-    "*": array("B", [0, 0, 85, 0, 0, 0, 0, 0]),
-    "+": array("B", [0, 0, 86, 0, 0, 0, 0, 0]),
-    "-": array("B", [0, 0, 87, 0, 0, 0, 0, 0]),
-    "enter": array("B", [0, 0, 88, 0, 0, 0, 0, 0]),
-    "1": array("B", [0, 0, 89, 0, 0, 0, 0, 0]),
-    "2": array("B", [0, 0, 90, 0, 0, 0, 0, 0]),
-    "3": array("B", [0, 0, 91, 0, 0, 0, 0, 0]),
-    "4": array("B", [0, 0, 92, 0, 0, 0, 0, 0]),
-    "5": array("B", [0, 0, 93, 0, 0, 0, 0, 0]),
-    "6": array("B", [0, 0, 94, 0, 0, 0, 0, 0]),
-    "7": array("B", [0, 0, 95, 0, 0, 0, 0, 0]),
-    "8": array("B", [0, 0, 96, 0, 0, 0, 0, 0]),
-    "9": array("B", [0, 0, 97, 0, 0, 0, 0, 0]),
-    ".": array("B", [0, 0, 99, 0, 0, 0, 0, 0]),
-    "backspace": array("B", [0, 0, 42, 0, 0, 0, 0, 0]),
+    # first row
+    "1": array("B", [0, 0, 17, 0, 0, 0, 0, 0]),
+    "2": array("B", [0, 0, 16, 0, 0, 0, 0, 0]),
+    "3": array("B", [0, 0, 15, 0, 0, 0, 0, 0]),
+    "4": array("B", [0, 0, 14, 0, 0, 0, 0, 0]),
+    # second row
+    "5": array("B", [0, 0, 10, 0, 0, 0, 0, 0]),
+    "6": array("B", [0, 0, 11, 0, 0, 0, 0, 0]),
+    "7": array("B", [0, 0, 12, 0, 0, 0, 0, 0]),
+    "8": array("B", [0, 0, 13, 0, 0, 0, 0, 0]),
+    # third row
+    "9": array("B", [0, 0, 9, 0, 0, 0, 0, 0]),
+    "10": array("B", [0, 0, 8, 0, 0, 0, 0, 0]),
+    "11": array("B", [0, 0, 7, 0, 0, 0, 0, 0]),
+    "12": array("B", [0, 0, 6, 0, 0, 0, 0, 0]),
+    # sixth row
+    "end": array("B", [0, 0, 33, 0, 0, 0, 0, 0]),
 }
 
 
@@ -130,7 +130,7 @@ try:
             asyncio.run(change_scene("outro"))
             asyncio.run(toggle_microphone(False))
 
-        elif buffer == keypad["enter"]:
+        elif buffer == keypad["end"]:
             # we need to exit program this way because it's only listening to
             # numeric keyboard and we can't press ctrl-c there
             logger.info("Exiting program")
