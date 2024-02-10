@@ -10,7 +10,7 @@
 (defvar ws--client nil)
 (defvar ws--ping-timer nil)
 
-(setq ws--url "ws://localhost:4000/socket/websocket")
+(setq ws--url "ws://localhost:5555/socket/websocket")
 
 (defun ws-setup-all ()
   "Start connection and perform some actions required to work properly."
