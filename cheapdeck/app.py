@@ -54,6 +54,23 @@ async def toggle_microphone(mute: bool):
     await send_message("SetInputMute", {"inputName": "Mic", "inputMuted": not mute})
 
 
+# keep state of filters so we can toggle their value
+shader_filters = {"matrix": False, "rain": False, "fire": False, "vcr": False}
+
+
+async def toggle_filter(source_name: str, filter_name: str, new_state: bool = None):
+    new_state = new_state if new_state is not None else not shader_filters[filter_name]
+    shader_filters[filter_name] = new_state
+    await send_message(
+        "SetSourceFilterEnabled",
+        {
+            "filterName": filter_name,
+            "filterEnabled": new_state,
+            "sourceName": source_name,
+        },
+    )
+
+
 # these are the identifiers for numeric keyboard
 # TODO: make this configurable
 device = usb.core.find(idVendor=0x8089, idProduct=0x0004)
@@ -105,10 +122,12 @@ try:
         if buffer == keypad["1"]:
             asyncio.run(change_scene("master"))
             asyncio.run(toggle_microphone(True))
+            asyncio.run(toggle_filter("Output Source", "vcr", False))
 
         elif buffer == keypad["2"]:
             asyncio.run(change_scene("secret"))
             asyncio.run(toggle_microphone(True))
+            asyncio.run(toggle_filter("Output Source", "vcr", False))
 
         elif buffer == keypad["3"]:
             asyncio.run(change_scene("brb"))
@@ -121,6 +140,7 @@ try:
         elif buffer == keypad["5"]:
             asyncio.run(change_scene("standby"))
             asyncio.run(toggle_microphone(False))
+            asyncio.run(toggle_filter("Output Source", "vcr", True))
 
         elif buffer == keypad["7"]:
             asyncio.run(change_scene("intro"))
@@ -128,6 +148,22 @@ try:
 
         elif buffer == keypad["8"]:
             asyncio.run(change_scene("outro"))
+            asyncio.run(toggle_microphone(False))
+
+        elif buffer == keypad["9"]:
+            asyncio.run(toggle_filter("Output Source", "matrix"))
+            asyncio.run(toggle_microphone(False))
+
+        elif buffer == keypad["10"]:
+            asyncio.run(toggle_filter("Output Source", "rain"))
+            asyncio.run(toggle_microphone(False))
+
+        elif buffer == keypad["11"]:
+            asyncio.run(toggle_filter("Output Source", "fire"))
+            asyncio.run(toggle_microphone(False))
+
+        elif buffer == keypad["12"]:
+            asyncio.run(toggle_filter("Output Source", "vcr"))
             asyncio.run(toggle_microphone(False))
 
         elif buffer == keypad["end"]:
