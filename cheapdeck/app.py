@@ -123,11 +123,13 @@ try:
             asyncio.run(change_scene("master"))
             asyncio.run(toggle_microphone(True))
             asyncio.run(toggle_filter("Output Source", "vcr", False))
+            asyncio.run(toggle_filter("Output Source", "fire", False))
 
         elif buffer == keypad["2"]:
             asyncio.run(change_scene("secret"))
             asyncio.run(toggle_microphone(True))
             asyncio.run(toggle_filter("Output Source", "vcr", False))
+            asyncio.run(toggle_filter("Output Source", "fire", False))
 
         elif buffer == keypad["3"]:
             asyncio.run(change_scene("brb"))
@@ -141,6 +143,7 @@ try:
             asyncio.run(change_scene("standby"))
             asyncio.run(toggle_microphone(False))
             asyncio.run(toggle_filter("Output Source", "vcr", True))
+            asyncio.run(toggle_filter("Output Source", "fire", True))
 
         elif buffer == keypad["7"]:
             asyncio.run(change_scene("intro"))
