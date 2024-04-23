@@ -1,3 +1,4 @@
+---
 name: cheapdeck CI
 
 on:
@@ -8,21 +9,24 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: python:3.10.6-alpine
+    container: python:3.12
     defaults:
       run:
         working-directory: cheapdeck
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Install Dependencies
-      run: |
-        apk --update add build-base
-        pip install --upgrade pip
-        pip install poetry
-        poetry install
+      - uses: actions/checkout@v3
+      - name: Install Dependencies
+        env:
+          RYE_INSTALL_OPTION: "--yes"
+        run: |
+          apt update && apt install -y build-essential curl bash
+          curl -sSf https://rye-up.com/get | bash
+          . "$HOME/.rye/env"
+          rye sync
 
-    - name: Run linters
-      run: |
-        poetry run black --check .
-        poetry run isort --check .
+      - name: Run linters
+        run: |
+          . "$HOME/.rye/env"
+          rye format --check
+          rye lint
