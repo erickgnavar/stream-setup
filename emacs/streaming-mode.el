@@ -29,8 +29,8 @@
         ;; save current font size in a temp variable to be able to restore it
         ;; after this minor mode is disabled
         (setq streaming-mode--big-font-mode-tmp (/ (face-attribute 'default :height) 10))
-        (set-frame-font (format "%s %d" streaming-mode--font-family 26)))
-    (set-frame-font (format "%s %d" streaming-mode--font-family streaming-mode--big-font-mode-tmp))))
+        (set-face-attribute 'default nil :font (format "%s 26" streaming-mode--font-family)))
+    (set-face-attribute 'default nil :font (format "%s %d" streaming-mode--font-family streaming-mode--big-font-mode-tmp))))
 
 (defun streaming-mode--event-post (event-name)
   "Make POST request using 'EVENT-NAME' to notify overlay application."
