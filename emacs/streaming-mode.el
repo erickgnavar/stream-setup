@@ -12,7 +12,7 @@
   :type 'string
   :group 'streaming-mode)
 
-(defcustom streaming-mode--overlay-url "http://localhost:4000/api/overlay"
+(defcustom streaming-mode--overlay-url "http://localhost:5555/api/overlay"
   "Overlay endpoint to send notifications."
   :type 'string
   :group 'streaming-mode)
