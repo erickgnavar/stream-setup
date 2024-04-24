@@ -82,7 +82,7 @@ defmodule Alfred.Workers.Twitch do
       |> Application.get_env(Ueberauth.Strategy.Twitch.OAuth)
       |> Map.new()
 
-    url = "https://api.twitch.tv/helix/users/follows?to_id=#{user_id}"
+    url = "https://api.twitch.tv/helix/channels/followers?broadcaster_id=#{user_id}"
 
     headers = [
       {"authorization", "Bearer #{access_token}"},
@@ -95,7 +95,7 @@ defmodule Alfred.Workers.Twitch do
 
         case payload["data"] do
           [] -> {:error, "no follows"}
-          [latest | _tail] -> {:ok, latest["from_name"]}
+          [latest | _tail] -> {:ok, latest["user_name"]}
         end
 
       {:ok, %HTTPoison.Response{status_code: 401}} ->

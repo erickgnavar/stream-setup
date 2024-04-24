@@ -43,7 +43,12 @@ config :spotify_ex,
 
 config :ueberauth, Ueberauth,
   providers: [
-    twitch: {Ueberauth.Strategy.Twitch, [default_scope: "user:read:email"]}
+    twitch:
+      {Ueberauth.Strategy.Twitch,
+       [
+         default_scope:
+           "moderator:read:followers channel:read:subscriptions channel:read:redemptions"
+       ]}
   ]
 
 # Import environment specific config. This must remain at the bottom
