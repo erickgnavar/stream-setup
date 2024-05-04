@@ -1,4 +1,4 @@
-;;; ws-tools.el --- websocket tools
+;;; ws-tools.el --- websocket tools -*- lexical-binding: t -*-
 
 ;;; Commentary:
 ;; Tools to handle websocket connection with overlay application

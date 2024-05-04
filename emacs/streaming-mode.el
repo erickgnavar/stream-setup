@@ -1,4 +1,4 @@
-;;; streaming-mode.el --- Tools for streaming
+;;; streaming-mode.el --- Tools for streaming -*- lexical-binding: t -*-
 
 ;;; Commentary:
 ;; Collection of tools to integrate Emacs with elixir overlay application
