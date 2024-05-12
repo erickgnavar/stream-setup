@@ -66,9 +66,9 @@ defmodule Alfred.Workers.Twitch do
         refresh_token: refresh_token
       })
 
-    case HTTPoison.post(url, URI.encode_query(payload), headers) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        Jason.decode(body)
+    case Req.post(url, body: URI.encode_query(payload), headers: headers) do
+      {:ok, %{status: 200, body: body}} ->
+        body
 
       error ->
         {:error, error}
@@ -89,16 +89,14 @@ defmodule Alfred.Workers.Twitch do
       {"client-id", client_id}
     ]
 
-    case HTTPoison.get(url, headers) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        {:ok, payload} = Jason.decode(body)
-
-        case payload["data"] do
+    case Req.get(url, headers: headers) do
+      {:ok, %{status: 200, body: body}} ->
+        case body["data"] do
           [] -> {:error, "no follows"}
           [latest | _tail] -> {:ok, latest["user_name"]}
         end
 
-      {:ok, %HTTPoison.Response{status_code: 401}} ->
+      {:ok, %{status: 401}} ->
         GenServer.cast(__MODULE__, :refresh_token)
 
         {:error, :expired_token}

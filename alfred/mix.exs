@@ -55,7 +55,8 @@ defmodule Alfred.MixProject do
       {:earmark, "~> 1.4"},
       {:exla, ">= 0.0.0"},
       {:bumblebee, "~> 0.5.3"},
-      {:fresh, "~> 0.4.4"}
+      {:fresh, "~> 0.4.4"},
+      {:req, "~> 0.4.14"}
     ]
   end
 

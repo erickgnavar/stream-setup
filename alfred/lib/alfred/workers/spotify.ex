@@ -83,35 +83,33 @@ defmodule Alfred.Workers.Spotify do
   defp fetch_current_song(access_token) do
     url = "https://api.spotify.com/v1/me/player/currently-playing"
 
-    case HTTPoison.get(url, [{"authorization", "Bearer #{access_token}"}]) do
-      {:ok, %HTTPoison.Response{status_code: 204}} ->
+    case Req.get(url, headers: [{"authorization", "Bearer #{access_token}"}]) do
+      {:ok, %{status: 204}} ->
         {:error, :no_playing}
 
-      {:ok, %HTTPoison.Response{status_code: 401}} ->
+      {:ok, %{status: 401}} ->
         GenServer.cast(__MODULE__, :refresh_token)
 
         {:error, :expired_token}
 
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        {:ok, payload} = Jason.decode(body)
-
+      {:ok, %{status: 200, body: body}} ->
         {:ok,
          %{
-           name: get_in(payload, ["item", "name"]),
+           name: get_in(body, ["item", "name"]),
            artist: %{
-             name: get_in(payload, ["item", "artists"]) |> List.first() |> Map.get("name")
+             name: get_in(body, ["item", "artists"]) |> List.first() |> Map.get("name")
            },
            playlist_url:
-             if get_in(payload, ["context", "type"]) == "playlist" do
-               get_in(payload, ["context", "external_urls", "spotify"])
+             if get_in(body, ["context", "type"]) == "playlist" do
+               get_in(body, ["context", "external_urls", "spotify"])
              else
                nil
              end,
            album: %{
-             name: get_in(payload, ["item", "album", "name"]),
+             name: get_in(body, ["item", "album", "name"]),
              # take second cover image
              image_url:
-               payload |> get_in(["item", "album", "images"]) |> Enum.at(1) |> Map.get("url")
+               body |> get_in(["item", "album", "images"]) |> Enum.at(1) |> Map.get("url")
            }
          }}
 
