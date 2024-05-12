@@ -3,6 +3,8 @@ defmodule Alfred.Twitch.RewardsHandler do
   Twitch reward handler, execute some functionality depending reward name
   """
 
+  alias Alfred.Workers.OBS
+
   @doc """
   For a given reward name execute its related code
   """
@@ -92,6 +94,25 @@ defmodule Alfred.Twitch.RewardsHandler do
          %{title: "**#{username}** canjeó **#{game}**", image_url: gif.value, sound: mp3.value}}
       )
     end
+  end
+
+  def handle("effect " <> effect_name, username, _text) do
+    Phoenix.PubSub.broadcast(
+      Alfred.PubSub,
+      AlfredWeb.OverlayLive.topic_name(),
+      {:new_notification,
+       %{
+         title: "**#{username}** canjeó **#{String.capitalize(effect_name)} effect**",
+         image_url: nil,
+         sound: nil
+       }}
+    )
+
+    Alfred.Workers.OBS.toggle_source_filter(effect_name, "Output Source", true)
+
+    Alfred.Workers.OBS.toggle_source_filter(effect_name, "Output Source", false,
+      timer: :timer.seconds(5)
+    )
   end
 
   def handle(reward_name, _username, _text),

@@ -21,7 +21,10 @@ defmodule Alfred.Application do
       # Start a worker by calling: Alfred.Worker.start_link(arg)
       # {Alfred.Worker, arg}
       # define process that will have all the required models loaded into memory
-      {Nx.Serving, serving: serving(), name: Alfred.Serving}
+      {Nx.Serving, serving: serving(), name: Alfred.Serving},
+      # OBS websocket client
+      {Alfred.Workers.OBS,
+       uri: "ws://localhost:4455", state: nil, opts: [name: {:local, :obs_websocket_client}]}
     ]
 
     children =
