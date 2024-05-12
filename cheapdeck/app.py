@@ -107,6 +107,11 @@ keypad = {
 }
 
 
+def disable_all_effect():
+    for effect in ["matrix", "rain", "vcr", "fire"]:
+        asyncio.run(toggle_filter("Output Source", effect, False))
+
+
 try:
     if device.is_kernel_driver_active(interface):
         # tell kernel to stop listening this deviceice
@@ -122,18 +127,17 @@ try:
         if buffer == keypad["1"]:
             asyncio.run(change_scene("master"))
             asyncio.run(toggle_microphone(True))
-            asyncio.run(toggle_filter("Output Source", "vcr", False))
-            asyncio.run(toggle_filter("Output Source", "fire", False))
+            disable_all_effect()
 
         elif buffer == keypad["2"]:
             asyncio.run(change_scene("secret"))
             asyncio.run(toggle_microphone(True))
-            asyncio.run(toggle_filter("Output Source", "vcr", False))
-            asyncio.run(toggle_filter("Output Source", "fire", False))
+            disable_all_effect()
 
         elif buffer == keypad["3"]:
             asyncio.run(change_scene("brb"))
             asyncio.run(toggle_microphone(False))
+            disable_all_effect()
 
         elif buffer == keypad["4"]:
             asyncio.run(change_scene("whiteboard"))
@@ -142,16 +146,19 @@ try:
         elif buffer == keypad["5"]:
             asyncio.run(change_scene("standby"))
             asyncio.run(toggle_microphone(False))
+            disable_all_effect()
             asyncio.run(toggle_filter("Output Source", "vcr", True))
             asyncio.run(toggle_filter("Output Source", "fire", True))
 
         elif buffer == keypad["7"]:
             asyncio.run(change_scene("intro"))
             asyncio.run(toggle_microphone(False))
+            disable_all_effect()
 
         elif buffer == keypad["8"]:
             asyncio.run(change_scene("outro"))
             asyncio.run(toggle_microphone(False))
+            disable_all_effect()
 
         elif buffer == keypad["9"]:
             asyncio.run(toggle_filter("Output Source", "matrix"))
