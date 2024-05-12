@@ -108,11 +108,9 @@ defmodule Alfred.Twitch.RewardsHandler do
        }}
     )
 
-    Alfred.Workers.OBS.toggle_source_filter(effect_name, "Output Source", true)
+    OBS.toggle_source_filter(effect_name, "Output Source", true)
 
-    Alfred.Workers.OBS.toggle_source_filter(effect_name, "Output Source", false,
-      timer: :timer.seconds(5)
-    )
+    OBS.toggle_source_filter(effect_name, "Output Source", false, timer: :timer.seconds(5))
   end
 
   def handle(reward_name, _username, _text),

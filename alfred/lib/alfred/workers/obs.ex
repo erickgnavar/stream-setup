@@ -1,7 +1,7 @@
 defmodule Alfred.Workers.OBS do
   use Fresh
 
-  defp send_message(type, data, opts \\ []) do
+  defp send_message(type, data, opts) do
     payload = %{
       "op" => 6,
       "d" => %{
@@ -18,7 +18,9 @@ defmodule Alfred.Workers.OBS do
   end
 
   @spec toggle_source_filter(String.t(), String.t(), boolean, Keyword.t()) :: tuple
-  def toggle_source_filter(filter_name, source_name, new_state, opts \\ []) do
+  def toggle_source_filter(filter_name, source_name, new_state, opts \\ [])
+
+  def toggle_source_filter(filter_name, source_name, new_state, opts) do
     send_message(
       "SetSourceFilterEnabled",
       %{
