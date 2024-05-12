@@ -15,7 +15,7 @@ jobs:
         working-directory: alfred
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
