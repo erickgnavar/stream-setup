@@ -39,7 +39,7 @@ config :phoenix, :json_library, Jason
 config :spotify_ex,
   auth_client: Spotify.Authentication,
   callback_url: "http://localhost:4000/spotify/authenticate",
-  scopes: ["user-read-currently-playing"]
+  scopes: ["user-read-currently-playing", "user-modify-playback-state"]
 
 config :ueberauth, Ueberauth,
   providers: [

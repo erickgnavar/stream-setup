@@ -4,6 +4,7 @@ defmodule Alfred.Workers.Voice do
   """
   use Alfred.Workers.FlagGenServer, flag: "flags.voice"
 
+  alias Alfred.Services.Spotify, as: SpotifyService
 
   @update_interval :timer.seconds(1)
   @allowed_chars ~c"0123456789áéíóúüabcdefghijklmnñopqrstuvwxyz "
@@ -56,7 +57,11 @@ defmodule Alfred.Workers.Voice do
 
   @spec run_say_comand(String.t()) :: any
   def run_say_comand(text) do
+    SpotifyService.pause_music()
+
     # Paulina is a Spanish voice already configured in macOS
     System.cmd("say", ["-v", "Paulina", text])
+
+    SpotifyService.resume_music()
   end
 end
