@@ -162,19 +162,15 @@ try:
 
         elif buffer == keypad["9"]:
             asyncio.run(toggle_filter("Output Source", "matrix"))
-            asyncio.run(toggle_microphone(False))
 
         elif buffer == keypad["10"]:
             asyncio.run(toggle_filter("Output Source", "rain"))
-            asyncio.run(toggle_microphone(False))
 
         elif buffer == keypad["11"]:
             asyncio.run(toggle_filter("Output Source", "fire"))
-            asyncio.run(toggle_microphone(False))
 
         elif buffer == keypad["12"]:
             asyncio.run(toggle_filter("Output Source", "vcr"))
-            asyncio.run(toggle_microphone(False))
 
         elif buffer == keypad["end"]:
             # we need to exit program this way because it's only listening to
