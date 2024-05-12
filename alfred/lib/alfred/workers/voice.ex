@@ -4,8 +4,9 @@ defmodule Alfred.Workers.Voice do
   """
   use Alfred.Workers.FlagGenServer, flag: "flags.voice"
 
+
   @update_interval :timer.seconds(1)
-  @allowed_chars '0123456789áéíóúüabcdefghijklmnñopqrstuvwxyz '
+  @allowed_chars ~c"0123456789áéíóúüabcdefghijklmnñopqrstuvwxyz "
 
   def queue_message(message) do
     GenServer.cast(__MODULE__, {:queue_message, clean_message(message)})
