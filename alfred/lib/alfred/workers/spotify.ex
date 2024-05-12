@@ -27,10 +27,7 @@ defmodule Alfred.Workers.Spotify do
     Process.send_after(self(), :fetch_current_song, @update_interval)
 
     new_state =
-      Map.merge(state, %{
-        playing_song: nil,
-        access_token: Core.get_config_value!("secret.spotify.access_token")
-      })
+      Map.merge(state, %{playing_song: nil})
 
     {:noreply, new_state}
   end
@@ -53,7 +50,7 @@ defmodule Alfred.Workers.Spotify do
       # at process startup
       Core.update_config_param("secret.spotify.access_token", new_access_token)
 
-      {:noreply, Map.put(state, :access_token, new_access_token)}
+      {:noreply, state}
     else
       error ->
         Logger.error("Error when trying to refresh Spotify access token: #{inspect(error)}")
@@ -66,7 +63,7 @@ defmodule Alfred.Workers.Spotify do
   def handle_info(:fetch_current_song, state) do
     current_song =
       with true <- state.flag,
-           access_token when not is_nil(state.access_token) <- state.access_token,
+           access_token when not is_nil(access_token) <- get_access_token(),
            {:ok, song} <- fetch_current_song(access_token) do
         song
       else
@@ -79,6 +76,8 @@ defmodule Alfred.Workers.Spotify do
 
     {:noreply, Map.put(state, :playing_song, current_song)}
   end
+
+  defp get_access_token, do: Core.get_config_value!("secret.spotify.access_token")
 
   @spec fetch_current_song(String.t()) :: {:ok, map} | {:error, String.t() | atom}
   defp fetch_current_song(access_token) do
