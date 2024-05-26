@@ -7,7 +7,7 @@
 
 (require 'erc)
 
-(defcustom streaming-mode--font-family "Iosevka"
+(defcustom streaming-mode--font-family "JetBrainsMono Nerd Font"
   "Font used for streaming."
   :type 'string
   :group 'streaming-mode)

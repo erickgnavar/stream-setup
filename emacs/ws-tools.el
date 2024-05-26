@@ -85,7 +85,7 @@ Also show USER who activate this feature."
   "Change font family using FONT-NAME and restart to default value after RESTART-AFTER seconds."
   (set-frame-font (format "%s %d" font-name 26))
   (run-with-timer restart-after nil #'(lambda ()
-                             (set-frame-font (format "%s %d" "Iosevka" 26)))))
+                             (set-frame-font (format "%s %d" "JetBrainsMono Nerd Font" 26)))))
 
 (defun ws--on-message (_websocket frame)
   "Receive FRAME from websocket connection."
