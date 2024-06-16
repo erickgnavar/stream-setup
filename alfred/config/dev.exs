@@ -16,7 +16,8 @@ config :alfred, Alfred.Repo,
 config :alfred, AlfredWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
-  http: [ip: {127, 0, 0, 1}, port: 4000],
+  # we use 0.0.0.0 because we need to listen to twitch webhooks
+  http: [ip: {0, 0, 0, 0}, port: 5555],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
