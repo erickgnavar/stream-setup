@@ -21,7 +21,7 @@ jobs:
           RYE_INSTALL_OPTION: "--yes"
         run: |
           apt update && apt install -y build-essential curl bash
-          curl -sSf https://rye-up.com/get | bash
+          curl -sSf https://rye.astral.sh/get | bash
           . "$HOME/.rye/env"
           rye sync
 
