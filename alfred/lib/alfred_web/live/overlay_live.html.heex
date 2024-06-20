@@ -62,12 +62,19 @@
 
 <%= unless is_nil(@playing_song) do %>
 <div class="playing-song-container">
-  <img src={@playing_song.album.image_url} />
-  <div class="song-name">
-    <%= @playing_song.name %>
+  <div class="song-cover-container">
+    <img src={@playing_song.album.image_url} />
   </div>
-  <div>
-    <%= @playing_song.artist.name %> - <%= @playing_song.album.name %>
+  <div class="song-details">
+    <p class="song-name">
+      <%= @playing_song.name %>
+    </p>
+    <p>
+      <%= @playing_song.artist.name %>
+    </p>
+    <p>
+      <%= @playing_song.album.name %>
+    </p>
   </div>
 </div>
 <% end %>
