@@ -22,6 +22,7 @@ defmodule AlfredWeb.OverlayLive do
      socket
      |> assign(:project_diffs, [])
      |> assign(:playing_song, nil)
+     |> assign(:playing_song_exit_class, nil)
      |> assign(:last_follow, nil)
      |> assign(:notification, nil)
      |> assign(:emoji, nil)
@@ -69,8 +70,18 @@ defmodule AlfredWeb.OverlayLive do
     {:noreply, assign(socket, :project_diffs, diffs)}
   end
 
+  def handle_info({:playing_song, nil}, socket) do
+    # animation run in .5 seconds so we can safely run this after 1 second
+    Process.send_after(self(), :playing_song_exit, :timer.seconds(1))
+    {:noreply, assign(socket, :playing_song_exit_class, "playing-song-container-exit")}
+  end
+
   def handle_info({:playing_song, song}, socket) do
     {:noreply, assign(socket, :playing_song, song)}
+  end
+
+  def handle_info(:playing_song_exit, socket) do
+    {:noreply, assign(socket, playing_song: nil, playing_song_exit_class: nil)}
   end
 
   def handle_info({:last_follow, follow}, socket) do

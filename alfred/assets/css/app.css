@@ -207,6 +207,12 @@
   left: 1rem;
   display: flex;
   gap: 1rem;
+  animation: song-entrance 0.5s ease-out;
+}
+
+.playing-song-container-exit {
+  animation: song-exit 0.5s ease-out;
+  animation-fill-mode: forwards;
 }
 
 .playing-song-container .song-cover-container {
@@ -269,6 +275,27 @@
 
   to {
     top: var(--notification-alert-top);
+  }
+}
+
+@keyframes song-entrance {
+  from {
+    left: -400px;
+  }
+
+  to {
+    left: 1rem;
+  }
+}
+
+@keyframes song-exit {
+  from {
+    left: 1rem;
+  }
+
+  to {
+    /* we don't know the widht of the widget so we use a big value to avoid errors */
+    left: -1000px;
   }
 }
 

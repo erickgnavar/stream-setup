@@ -61,7 +61,7 @@
 <% end %>
 
 <%= unless is_nil(@playing_song) do %>
-<div class="playing-song-container">
+<div class={["playing-song-container", @playing_song_exit_class]}>
   <div class="song-cover-container">
     <img src={@playing_song.album.image_url} />
   </div>
