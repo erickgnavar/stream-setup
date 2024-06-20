@@ -6,7 +6,7 @@ defmodule Alfred.Commands.Handlers.SongHandler do
   alias Phoenix.PubSub
   alias Alfred.Workers.Spotify
 
-  @show_time :timer.seconds(5)
+  @show_time :timer.seconds(8)
   @overlay_topic AlfredWeb.OverlayLive.topic_name()
 
   def execute(_sender, _args) do
