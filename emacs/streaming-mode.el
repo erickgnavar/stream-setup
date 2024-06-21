@@ -60,12 +60,21 @@
       (setq compilation-finish-functions (delq 'streaming-mode--notify-overlay compilation-finish-functions))
       (streaming-mode--big-font-mode -1))))
 
-(defun streaming-mode-setup-twitch-irc ()
-  "Setup ERC variables to connect to twitch IRC server."
-  (interactive)
-  (setq erc-server "irc.chat.twitch.tv"
-        erc-nick "erickgnavar"
-        erc-password (read-passwd "Enter Twitch IRC token: ")))
+(defun my/twitch-password ()
+  "Get passworf from ~/.authinfo file."
+  (funcall (plist-get (car (auth-source-search :machine "irc.chat.twitch.tv" :user "erickgnavar")) :secret)))
+
+(use-package circe
+  :ensure t
+  :config
+  (setq circe-network-options
+        '(("Twitch"
+           :tls t
+           :port 6697
+           :host "irc.chat.twitch.tv"
+           :user "erickgnavar"
+           :pass (lambda (server)
+                   (my/twitch-password))))))
 
 (provide 'streaming-mode)
 
