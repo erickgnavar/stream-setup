@@ -2,11 +2,11 @@
   <div class="notification-alert">
     <img src={@notification.image_url} class="notification-image" />
     <div class="notification-title">
-      <%= raw render_markdown(@notification.title) %>
+      <%= raw(render_markdown(@notification.title)) %>
     </div>
     <%= if @notification[:sound] do %>
       <audio autoplay>
-        <source src={@notification.sound} type="audio/mp3">
+        <source src={@notification.sound} type="audio/mp3" />
       </audio>
     <% end %>
   </div>
@@ -15,7 +15,8 @@
   <div class="topbar-inner">
     <span>
       <!-- color copied from twitter website -->
-      <i class="fa-brands fa-twitter" style="color: #1D9BF0"></i> @erickgnavar
+      <i class="fa-brands fa-twitter" style="color: #1D9BF0"></i>
+      @erickgnavar
     </span>
     <span>
       !help
@@ -29,24 +30,24 @@
   </div>
 </header>
 <%= unless is_nil(@image_url) do %>
-<img src={@image_url} class="current-image image-enter" />
+  <img src={@image_url} class="current-image image-enter" />
 <% end %>
 
 <div class="project-diffs">
   <table>
     <tbody>
       <%= for diff <- @project_diffs do %>
-      <tr>
-        <td class="diff-add">
-          +<%= diff.add %>
-        </td>
-        <td class="diff-delete">
-          -<%= diff.delete %>
-        </td>
-        <td class="diff-filename">
-          <%= diff.filename %>
-        </td>
-      </tr>
+        <tr>
+          <td class="diff-add">
+            +<%= diff.add %>
+          </td>
+          <td class="diff-delete">
+            -<%= diff.delete %>
+          </td>
+          <td class="diff-filename">
+            <%= diff.filename %>
+          </td>
+        </tr>
       <% end %>
     </tbody>
   </table>
@@ -61,20 +62,20 @@
 <% end %>
 
 <%= unless is_nil(@playing_song) do %>
-<div class={["playing-song-container", @playing_song_exit_class]}>
-  <div class="song-cover-container">
-    <img src={@playing_song.album.image_url} />
+  <div class={["playing-song-container", @playing_song_exit_class]}>
+    <div class="song-cover-container">
+      <img src={@playing_song.album.image_url} />
+    </div>
+    <div class="song-details">
+      <p class="song-name">
+        <%= @playing_song.name %>
+      </p>
+      <p>
+        <%= @playing_song.artist.name %>
+      </p>
+      <p>
+        <%= @playing_song.album.name %>
+      </p>
+    </div>
   </div>
-  <div class="song-details">
-    <p class="song-name">
-      <%= @playing_song.name %>
-    </p>
-    <p>
-      <%= @playing_song.artist.name %>
-    </p>
-    <p>
-      <%= @playing_song.album.name %>
-    </p>
-  </div>
-</div>
 <% end %>
