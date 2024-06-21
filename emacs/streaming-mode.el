@@ -76,6 +76,19 @@
            :pass (lambda (server)
                    (my/twitch-password))))))
 
+(defun my/toggle-chat ()
+  "Show chat in full screen and save previous windows configuration."
+  (interactive)
+  (let ((chat-buffer (get-buffer-create "#chat")))
+    (if (eq (current-buffer) chat-buffer)
+        (set-window-configuration my/toggle-chat-window-configuration)
+      (progn
+        (setq my/toggle-chat-window-configuration (current-window-configuration))
+        (switch-to-buffer chat-buffer)
+        (delete-other-windows)))))
+
+(evil-define-key nil 'global (kbd "<leader>o") 'my/toggle-chat)
+
 (provide 'streaming-mode)
 
 ;;; streaming-mode.el ends here
