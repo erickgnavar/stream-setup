@@ -25,6 +25,7 @@ defmodule AlfredWeb.OverlayLive do
      |> assign(:playing_song_exit_class, nil)
      |> assign(:last_follow, nil)
      |> assign(:notification, nil)
+     |> assign(:notification_hide_class, nil)
      |> assign(:emoji, nil)
      |> assign(:image_url, nil)}
   end
@@ -63,7 +64,12 @@ defmodule AlfredWeb.OverlayLive do
   end
 
   def handle_info(:hide_notification, socket) do
-    {:noreply, assign(socket, :notification, nil)}
+    Process.send_after(self(), :clean_notification, :timer.seconds(1))
+    {:noreply, assign(socket, notification_hide_class: "hide-notification")}
+  end
+
+  def handle_info(:clean_notification, socket) do
+    {:noreply, assign(socket, notification: nil, notification_hide_class: nil)}
   end
 
   def handle_info({:new_project_diffs, diffs}, socket) do

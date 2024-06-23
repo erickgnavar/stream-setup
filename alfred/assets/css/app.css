@@ -240,8 +240,12 @@
   width: var(--notification-alert-width);
   top: var(--notification-alert-top);
   left: calc(50% - (var(--notification-alert-width) / 2));
-  animation-duration: 1s;
-  animation-name: show-notification;
+  animation: show-notification 1s ease-out;
+}
+
+.hide-notification {
+  animation: hide-notification 1s ease-out;
+  animation-fill-mode: forwards;
 }
 
 .notification-image {
@@ -275,6 +279,16 @@
 
   to {
     top: var(--notification-alert-top);
+  }
+}
+
+@keyframes hide-notification {
+  from {
+    top: var(--notification-alert-top);
+  }
+
+  to {
+    top: -300px;
   }
 }
 

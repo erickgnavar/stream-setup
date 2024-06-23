@@ -1,5 +1,5 @@
 <%= unless is_nil(@notification) do %>
-  <div class="notification-alert">
+  <div class={["notification-alert", @notification_hide_class]}>
     <img src={@notification.image_url} class="notification-image" />
     <div class="notification-title">
       <%= raw(render_markdown(@notification.title)) %>
