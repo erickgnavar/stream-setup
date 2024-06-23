@@ -11,7 +11,7 @@ defmodule AlfredWeb.AdminLive do
     # listen to flags updates
     PubSub.subscribe(Alfred.PubSub, Core.flags_topic())
 
-    {:ok, assign(socket, :flags, flags)}
+    {:ok, assign(socket, flags: flags, page_title: "Admin console")}
   end
 
   @impl true
