@@ -119,7 +119,7 @@
 }
 
 :root {
-  --current-image-max-width: 500px;
+  --current-image-max-width: 350px;
   --topbar-height: 1.5rem;
   --topbar-vertical-padding: 5px;
   --notification-alert-width: 500px;
