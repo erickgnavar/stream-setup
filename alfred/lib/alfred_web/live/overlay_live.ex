@@ -27,6 +27,7 @@ defmodule AlfredWeb.OverlayLive do
      |> assign(:notification, nil)
      |> assign(:notification_hide_class, nil)
      |> assign(:emoji, nil)
+     |> assign(:todos, nil)
      |> assign(:image_url, nil)}
   end
 
@@ -74,6 +75,10 @@ defmodule AlfredWeb.OverlayLive do
 
   def handle_info({:new_project_diffs, diffs}, socket) do
     {:noreply, assign(socket, :project_diffs, diffs)}
+  end
+
+  def handle_info({:update_todos, todos}, socket) do
+    {:noreply, assign(socket, :todos, todos)}
   end
 
   def handle_info({:playing_song, nil}, socket) do

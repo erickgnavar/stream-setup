@@ -11,6 +11,18 @@
     <% end %>
   </div>
 <% end %>
+
+<%= unless is_nil(@todos) do %>
+  <div id="todos-wrapper">
+    <ul>
+      <li :for={todo <- @todos}>
+        <span :if={todo.done}>[X]</span>
+        <span :if={!todo.done}>[  ]</span>
+        <%= todo.text %>
+      </li>
+    </ul>
+  </div>
+<% end %>
 <header class="topbar">
   <div class="topbar-inner">
     <span>
