@@ -48,6 +48,14 @@ defmodule AlfredWeb do
         layout: {AlfredWeb.LayoutView, :live}
 
       unquote(view_helpers())
+
+      def ok(socket) do
+        {:ok, socket}
+      end
+
+      def noreply(socket) do
+        {:noreply, socket}
+      end
     end
   end
 

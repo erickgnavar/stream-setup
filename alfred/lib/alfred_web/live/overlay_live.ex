@@ -18,17 +18,17 @@ defmodule AlfredWeb.OverlayLive do
     # subscribe to sentiment analysis topic
     PubSub.subscribe(Alfred.PubSub, @chat_sentiment_analysis_topic)
 
-    {:ok,
-     socket
-     |> assign(:project_diffs, [])
-     |> assign(:playing_song, nil)
-     |> assign(:playing_song_exit_class, nil)
-     |> assign(:last_follow, nil)
-     |> assign(:notification, nil)
-     |> assign(:notification_hide_class, nil)
-     |> assign(:emoji, nil)
-     |> assign(:todos, nil)
-     |> assign(:image_url, nil)}
+    socket
+    |> assign(:project_diffs, [])
+    |> assign(:playing_song, nil)
+    |> assign(:playing_song_exit_class, nil)
+    |> assign(:last_follow, nil)
+    |> assign(:notification, nil)
+    |> assign(:notification_hide_class, nil)
+    |> assign(:emoji, nil)
+    |> assign(:todos, nil)
+    |> assign(:image_url, nil)
+    |> ok()
   end
 
   @doc """
