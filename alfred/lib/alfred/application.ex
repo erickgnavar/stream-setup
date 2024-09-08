@@ -24,7 +24,9 @@ defmodule Alfred.Application do
       {Nx.Serving, serving: serving(), name: Alfred.Serving},
       # OBS websocket client
       {Alfred.Workers.OBS,
-       uri: "ws://localhost:4455", state: nil, opts: [name: {:local, :obs_websocket_client}]}
+       uri: "ws://localhost:4455", state: nil, opts: [name: {:local, :obs_websocket_client}]},
+      {Alfred.Workers.TwitchEvents,
+       uri: "wss://eventsub.wss.twitch.tv/ws?keepalive_timeout_seconds=30"}
     ]
 
     children =

@@ -26,19 +26,19 @@ defmodule AlfredWeb.TwitchController do
   end
 
   @spec handle_event(String.t(), map) :: {:ok, String.t()} | {:error, String.t()}
-  defp handle_event("webhook_callback_verification", params) do
+  def handle_event("webhook_callback_verification", params) do
     # Used when a new subscription is created and it has to be verified
     {:ok, Map.get(params, "challenge")}
   end
 
-  defp handle_event("notification", params) do
+  def handle_event("notification", params) do
     # handle all regular notifications
     params
     |> get_in(["subscription", "type"])
     |> handle_type(params["event"])
   end
 
-  defp handle_event(_event, _params), do: {:error, "Event not found"}
+  def handle_event(_event, _params), do: {:error, "Event not found"}
 
   defp handle_type("channel.raid", %{
          "from_broadcaster_user_login" => username,

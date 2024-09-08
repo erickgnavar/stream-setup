@@ -56,6 +56,7 @@ defmodule Alfred.MixProject do
       {:exla, ">= 0.0.0"},
       {:bumblebee, "~> 0.5.3"},
       {:fresh, "~> 0.4.4"},
+      {:websockex, "~> 0.4.3"},
       {:req, "~> 0.4.14"},
       {:org, "~> 0.1.0"}
     ]
