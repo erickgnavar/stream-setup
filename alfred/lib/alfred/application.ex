@@ -17,16 +17,7 @@ defmodule Alfred.Application do
       # Start the Endpoint (http/https)
       AlfredWeb.Endpoint,
       # twitch irc chat supervisor
-      Alfred.Chat,
-      # Start a worker by calling: Alfred.Worker.start_link(arg)
-      # {Alfred.Worker, arg}
-      # define process that will have all the required models loaded into memory
-      {Nx.Serving, serving: serving(), name: Alfred.Serving},
-      # OBS websocket client
-      {Alfred.Workers.OBS,
-       uri: "ws://localhost:4455", state: nil, opts: [name: {:local, :obs_websocket_client}]},
-      {Alfred.Workers.TwitchEvents,
-       uri: "wss://eventsub.wss.twitch.tv/ws?keepalive_timeout_seconds=30"}
+      Alfred.Chat
     ]
 
     children =
@@ -42,7 +33,16 @@ defmodule Alfred.Application do
             # Fetch data from Twitch
             Alfred.Workers.Twitch,
             # Voice worker
-            Alfred.Workers.Voice
+            Alfred.Workers.Voice,
+
+            # define process that will have all the required models loaded into memory
+            {Nx.Serving, serving: serving(), name: Alfred.Serving},
+
+            # OBS websocket client
+            {Alfred.Workers.OBS,
+             uri: "ws://localhost:4455", state: nil, opts: [name: {:local, :obs_websocket_client}]},
+            {Alfred.Workers.TwitchEvents,
+             uri: "wss://eventsub.wss.twitch.tv/ws?keepalive_timeout_seconds=30"}
           ]
       end
 
