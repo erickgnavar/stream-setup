@@ -87,7 +87,8 @@
         (switch-to-buffer chat-buffer)
         (delete-other-windows)))))
 
-(evil-define-key nil 'global (kbd "<leader>o") 'my/toggle-chat)
+(with-eval-after-load 'evil
+  (evil-define-key nil 'global (kbd "<leader>o") 'my/toggle-chat))
 
 (provide 'streaming-mode)
 
