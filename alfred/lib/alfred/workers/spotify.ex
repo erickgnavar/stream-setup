@@ -39,7 +39,7 @@ defmodule Alfred.Workers.Spotify do
 
   @impl true
   def handle_cast(:refresh_token, state) do
-    Logger.info("Refresing Spotify access token")
+    Logger.info("Refreshing Spotify access token")
 
     with %{value: access_token} <- Core.get_config_param("secret.spotify.access_token"),
          %{value: refresh_token} <- Core.get_config_param("secret.spotify.refresh_token"),
