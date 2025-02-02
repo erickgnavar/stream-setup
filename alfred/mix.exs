@@ -54,7 +54,7 @@ defmodule Alfred.MixProject do
       {:bcrypt_elixir, "~> 3.0"},
       {:earmark, "~> 1.4"},
       {:exla, ">= 0.0.0"},
-      {:bumblebee, "~> 0.5.3"},
+      {:bumblebee, "~> 0.6.0"},
       {:fresh, "~> 0.4.4"},
       {:websockex, "~> 0.4.3"},
       {:req, "~> 0.4.14"},
