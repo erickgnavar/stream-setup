@@ -15,11 +15,11 @@
     <div class="flex-none">
       <ul class="menu menu-horizontal px-1">
         <li>
-          <%= link("Log out",
+          {link("Log out",
             to: Routes.auth_path(@socket, :logout),
             method: :delete,
             class: "btn btn-ghost btn-sm"
-          ) %>
+          )}
         </li>
       </ul>
     </div>
@@ -43,7 +43,7 @@
           <%= for flag <- @flags do %>
             <tr>
               <td>
-                <%= flag.key %>
+                {flag.key}
               </td>
               <td class="text-xl">
                 <%= if flag.value == "true" do %>
@@ -85,10 +85,10 @@
               Spotify
             </td>
             <td>
-              <%= link("Login",
+              {link("Login",
                 to: Routes.spotify_path(@socket, :authorize),
                 class: "btn btn-neutral btn-sm"
-              ) %>
+              )}
             </td>
           </tr>
           <tr>
@@ -98,10 +98,10 @@
               Twitch
             </td>
             <td>
-              <%= link("Login",
+              {link("Login",
                 to: Routes.auth_path(@socket, :request, "twitch"),
                 class: "btn btn-neutral btn-sm"
-              ) %>
+              )}
             </td>
           </tr>
         </tbody>

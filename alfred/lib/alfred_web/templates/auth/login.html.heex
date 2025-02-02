@@ -8,7 +8,7 @@
 
 <div class="container mx-auto mt-3">
   <form action={Routes.auth_path(@conn, :new_session)} method="POST">
-    <%= csrf_input_tag(Routes.auth_path(@conn, :new_session)) %>
+    {csrf_input_tag(Routes.auth_path(@conn, :new_session))}
     <div class="form-control w-full max-w-xs">
       <label class="label">
         <span class="label-text">Password</span>

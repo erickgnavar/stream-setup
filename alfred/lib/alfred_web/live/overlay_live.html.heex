@@ -2,7 +2,7 @@
   <div class={["notification-alert", @notification_hide_class]}>
     <img src={@notification.image_url} class="notification-image" />
     <div class="notification-title">
-      <%= raw(render_markdown(@notification.title)) %>
+      {raw(render_markdown(@notification.title))}
     </div>
     <%= if @notification[:sound] do %>
       <audio autoplay>
@@ -18,7 +18,7 @@
       <li :for={todo <- @todos}>
         <span :if={todo.done}>[X]</span>
         <span :if={!todo.done}>[  ]</span>
-        <%= todo.text %>
+        {todo.text}
       </li>
     </ul>
   </div>
@@ -36,7 +36,7 @@
     </span>
     <%= if @last_follow do %>
       <span>
-        <i class="fa-solid fa-heart" style="color: #F00"></i> Last follow: <%= @last_follow %>
+        <i class="fa-solid fa-heart" style="color: #F00"></i> Last follow: {@last_follow}
       </span>
     <% end %>
   </div>
@@ -51,13 +51,13 @@
       <%= for diff <- @project_diffs do %>
         <tr>
           <td class="diff-add">
-            +<%= diff.add %>
+            +{diff.add}
           </td>
           <td class="diff-delete">
-            -<%= diff.delete %>
+            -{diff.delete}
           </td>
           <td class="diff-filename">
-            <%= diff.filename %>
+            {diff.filename}
           </td>
         </tr>
       <% end %>
@@ -68,7 +68,7 @@
 <%= if @emoji do %>
   <div class="sentiment-analysis">
     <div class="emoji">
-      <%= @emoji %>
+      {@emoji}
     </div>
   </div>
 <% end %>
@@ -80,13 +80,13 @@
     </div>
     <div class="song-details">
       <p class="song-name">
-        <%= @playing_song.name %>
+        {@playing_song.name}
       </p>
       <p>
-        <%= @playing_song.artist.name %>
+        {@playing_song.artist.name}
       </p>
       <p>
-        <%= @playing_song.album.name %>
+        {@playing_song.album.name}
       </p>
     </div>
   </div>
