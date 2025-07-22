@@ -10,7 +10,7 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    container: elixir:1.17
+    container: elixir:1.18
     defaults:
       run:
         working-directory: alfred
