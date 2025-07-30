@@ -20,7 +20,7 @@ defmodule Alfred.Commands.Handlers.LineHandler do
         comment -> "#{sender}: #{comment}"
       end
 
-    unless is_nil(start) do
+    if not is_nil(start) do
       Phoenix.PubSub.broadcast(
         Alfred.PubSub,
         AlfredWeb.EmacsChannel.pubsub_topic(),
