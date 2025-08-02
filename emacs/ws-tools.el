@@ -46,12 +46,13 @@
 (defun ws--enable-light-theme (restart-after user)
   "Change theme to a light one and restore current theme after RESTART-AFTER secs.
 Also show USER who activate this feature."
-  (disable-theme 'dracula)
-  (load-theme 'modus-operandi t)
-  (message "%s used light theme" user)
-  (run-with-timer restart-after nil #'(lambda ()
-                                       (disable-theme 'modus-operandi)
-                                       (load-theme 'dracula t))))
+  (let ((current-theme (car custom-enabled-themes)))
+    (disable-theme current-theme)
+    (load-theme 'modus-operandi t)
+    (message "%s used light theme" user)
+    (run-with-timer restart-after nil #'(lambda ()
+                                          (disable-theme 'modus-operandi)
+                                          (load-theme current-theme t))))
 
 (defun ws--highlight-line (start text)
   "Highlight a line in current buffer using START position and show TEXT as a tooltip."
