@@ -16,17 +16,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Install Dependencies
-        env:
-          RYE_INSTALL_OPTION: "--yes"
+      - name: Install uv
         run: |
           apt update && apt install -y build-essential curl bash
-          curl -sSf https://rye.astral.sh/get | bash
-          . "$HOME/.rye/env"
-          rye sync
+          curl -LsSf https://astral.sh/uv/install.sh | sh
 
       - name: Run linters
         run: |
-          . "$HOME/.rye/env"
-          rye format --check
-          rye lint
+          uvx ruff format --check .
+          uvx ruff check --output-format github .

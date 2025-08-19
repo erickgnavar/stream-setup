@@ -1,3 +1,9 @@
+# /// script
+# dependencies = [
+#   "pyusb>=1.2.1",
+#   "websockets>=12.0",
+# ]
+# ///
 import asyncio
 import json
 import logging
